@@ -1,0 +1,10 @@
+applications:
+- freeipa
+classes:
+- service.freeipa.support
+parameters:
+  freeipa:
+    client:
+      enabled: true
+      bind:
+        address: 0.0.0.0

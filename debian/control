@@ -1,0 +1,15 @@
+Source: salt-formula-freeipa
+Maintainer: Filip Pytloun <filip.pytloun@tcpcloud.eu>
+Section: admin
+Priority: optional
+Build-Depends: debhelper (>= 9)
+Standards-Version: 3.9.6
+Homepage: http://www.tcpcloud.eu
+Vcs-Browser: https://github.com/tcpcloud/salt-formula-freeipa
+Vcs-Git: https://github.com/tcpcloud/salt-formula-freeipa.git
+
+Package: salt-formula-freeipa
+Architecture: all
+Depends: ${misc:Depends}, salt-master, reclass
+Description: freeipa salt formula
+ Install and configure freeipa system.

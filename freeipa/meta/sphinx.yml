@@ -1,0 +1,14 @@
+{%- from "freeipa/map.jinja" import client with context %}
+doc:
+  name: freeipa
+  description: FreeIPA Identity Management
+  role:
+    client:
+      name: client
+      param:
+        domain:
+          name: "FreeIPA Domain"
+          value: {{ client.domain }}
+        server:
+          name: "FreeIPA Server"
+          value: {{ client.server }}
