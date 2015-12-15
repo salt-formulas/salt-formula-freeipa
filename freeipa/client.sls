@@ -26,6 +26,23 @@ sssd_service:
     - require:
       - cmd: freeipa_client_install
 
+{%- if client.get('mkhomedir', True) %}
+# This should be shipped by package and setup with --mkhomedir above, but
+# obviously isn't
+pam_mkhomedir_config:
+  file.managed:
+    - name: /usr/share/pam-configs/mkhomedir
+    - source: salt://freeipa/files/mkhomedir
+    - require:
+      - cmd: freeipa_client_install
+
+pam_auth_update:
+  cmd.wait:
+    - name: pam-auth-update --force
+    - watch:
+      - file: pam_mkhomedir_config
+{%- endif %}
+
 # Workaround bug
 # https://bugs.launchpad.net/ubuntu/+source/freeipa/+bug/1492226
 # before freeipa-client version 4.1.4 is in trusty
