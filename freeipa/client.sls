@@ -11,7 +11,7 @@ freeipa_client_install:
         ipa-client-install
         --server {{ client.server }}
         --domain {{ client.domain }}
-        --realm {{ client.realm }}
+        {%- if client.realm is defined %} --realm {{ client.realm }}{%- endif %}
         --hostname {% if client.hostname is defined %}{{ client.hostname }}{% else %}{{ grains['fqdn'] }}{% endif %}
         -w {{ client.otp }}
         {%- if client.get('mkhomedir', True) %} --mkhomedir{%- endif %}
