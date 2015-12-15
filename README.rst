@@ -18,6 +18,7 @@ Client
         enabled: true
         server: ipa.example.com
         domain: ${linux:network:domain}
+        realm: ${linux:network:domain}
         hostname: ${linux:network:fqdn}
 
 Read more
