@@ -1,6 +1,9 @@
 {%- from "freeipa/map.jinja" import client with context %}
 {%- if client.enabled %}
 
+include:
+- openssh.server
+
 freeipa_client_pkgs:
   pkg.installed:
     - names: {{ client.pkgs }}
@@ -26,6 +29,8 @@ sssd_service:
     - name: sssd
     - require:
       - cmd: freeipa_client_install
+    - watch_in:
+      - service: openssh_server_service
 
 {%- if client.get('mkhomedir', True) %}
 # This should be shipped by package and setup with --mkhomedir above, but
