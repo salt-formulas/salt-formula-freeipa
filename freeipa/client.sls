@@ -40,6 +40,8 @@ pam_mkhomedir_config:
 pam_auth_update:
   cmd.wait:
     - name: pam-auth-update --force
+    - env:
+      - DEBIAN_FRONTEND: noninteractive
     - watch:
       - file: pam_mkhomedir_config
 {%- endif %}
