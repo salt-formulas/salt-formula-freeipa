@@ -1,4 +1,4 @@
-{%- from "freeipa/map.jinja" import client with context %}
+{%- from "freeipa/map.jinja" import client, server with context %}
 doc:
   name: freeipa
   description: FreeIPA Identity Management
@@ -9,6 +9,20 @@ doc:
         domain:
           name: "FreeIPA Domain"
           value: {{ client.domain }}
+        realm:
+          name: "FreeIPA Realm"
+          value: {{ client.realm }}
+        {%- if client.server is defined %}
         server:
           name: "FreeIPA Server"
           value: {{ client.server }}
+        {%- endif %}
+    server:
+      name: server
+      param:
+        domain:
+          name: "FreeIPA Domain"
+          value: {{ server.domain }}
+        realm:
+          name: "FreeIPA Realm"
+          value: {{ server.realm }}

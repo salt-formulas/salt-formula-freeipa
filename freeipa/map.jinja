@@ -8,3 +8,14 @@ Debian:
 {%- endload %}
 
 {%- set client = salt['grains.filter_by'](client_defaults, merge=salt['pillar.get']('freeipa:client')) %}
+
+{%- load_yaml as server_defaults %}
+Debian:
+  pkgs:
+  - freeipa-server
+  ldap:
+    minssf: 56
+    anonymous: false
+{%- endload %}
+
+{%- set server = salt['grains.filter_by'](server_defaults, merge=salt['pillar.get']('freeipa:server')) %}
