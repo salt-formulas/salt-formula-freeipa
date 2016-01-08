@@ -35,34 +35,32 @@ freeipa_server_install:
 
 ldap_secure_binds:
   cmd.run:
-    - names:
-        - kinit admin
-        - |
-          ldapmodify -Y GSSAPI -h localhost -p 389 -Z << EOF
+    - name: |
+          ldapmodify -D 'cn=directory manager' -w {{ server.ldap.password }} -Z << EOF
           dn: cn=config
           changetype: modify
           replace: nsslapd-minssf
           nsslapd-minssf: {{ server.ldap.minssf }}
           EOF
-    - unless: "kinit admin && ldapsearch -Y GSSAPI -b 'cn=config' -h localhost -p 389 -Z | grep 'nsslapd-minssf: {{ server.ldap.minssf }}'"
+    - unless: "ldapsearch -D 'cn=directory manager' -w {{ server.ldap.password }} -b 'cn=config' -Z | grep 'nsslapd-minssf: {{ server.ldap.minssf }}'"
     - require:
       - cmd: freeipa_server_install
+      - file: ldap_conf
 
 {%- if not server.ldap.anonymous %}
 ldap_disable_anonymous:
   cmd.run:
-    - names:
-        - kinit admin
-        - |
-          ldapmodify -Y GSSAPI -h localhost -p 389 -Z << EOF
+    - name: |
+          ldapmodify -D 'cn=directory manager' -w {{ server.ldap.password }} -Z << EOF
           dn: cn=config
           changetype: modify
           replace: nsslapd-allow-anonymous-access
           nsslapd-allow-anonymous-access: off
           EOF
-    - unless: "kinit admin && ldapsearch -Y GSSAPI -b 'cn=config' -h localhost -p 389 -Z | grep 'nsslapd-allow-anonymous-access: off'"
+    - unless: "ldapsearch -D 'cn=directory manager' -w {{ server.ldap.password }} -b 'cn=config' -Z | grep 'nsslapd-allow-anonymous-access: off'"
     - require:
       - cmd: freeipa_server_install
+      - file: ldap_conf
 {%- endif %}
 
 {%- if server.get('dns', {}).get('enabled', True) %}
