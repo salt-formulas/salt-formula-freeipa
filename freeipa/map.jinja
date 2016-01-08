@@ -13,9 +13,13 @@ Debian:
 Debian:
   pkgs:
   - freeipa-server
-  ldap:
-    minssf: 56
-    anonymous: false
+  named_service: bind9
+  named_conf: /etc/bind/named.conf
+RedHat:
+  pkgs:
+  - freeipa-server
+  named_service: named
+  named_conf: /etc/named.conf
 {%- endload %}
 
 {%- set server = salt['grains.filter_by'](server_defaults, merge=salt['pillar.get']('freeipa:server')) %}

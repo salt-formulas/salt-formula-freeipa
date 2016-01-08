@@ -6,3 +6,6 @@ parameters:
   freeipa:
     server:
       enabled: true
+      ldap:
+        minssf: 56
+        anonymous: false
