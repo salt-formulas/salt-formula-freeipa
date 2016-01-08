@@ -26,5 +26,6 @@ freeipa_client_install:
     - require_in:
       - service: sssd_service
       - cmd: freeipa_client_fix_1492226
+      - file: ldap_conf
 
 {%- endif %}

@@ -9,6 +9,12 @@ sssd_service:
     - watch_in:
       - service: openssh_server_service
 
+ldap_conf:
+  file.managed:
+    - name: /etc/ldap/ldap.conf
+    - template: jinja
+    - source: salt://freeipa/files/ldap.conf
+
 {%- if client.get('mkhomedir', True) and server.get('mkhomedir', True) %}
 # This should be shipped by package and setup with --mkhomedir above, but
 # obviously isn't

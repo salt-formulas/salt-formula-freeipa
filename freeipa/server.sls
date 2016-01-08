@@ -31,6 +31,7 @@ freeipa_server_install:
     - require_in:
       - service: sssd_service
       - cmd: freeipa_client_fix_1492226
+      - file: ldap_conf
 
 ldap_secure_binds:
   cmd.run:

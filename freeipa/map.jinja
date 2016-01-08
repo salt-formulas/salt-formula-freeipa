@@ -19,3 +19,24 @@ Debian:
 {%- endload %}
 
 {%- set server = salt['grains.filter_by'](server_defaults, merge=salt['pillar.get']('freeipa:server')) %}
+
+{# Get list of all ipa servers #}
+{%- if pillar.freeipa.client is defined %}
+  {%- if client.servers is defined %}
+    {%- set ipa_servers = client.servers %}
+  {%- else %}
+    {%- set ipa_servers = [client.server] %}
+  {%- endif %}
+{%- endif %}
+
+{%- if pillar.freeipa.server is defined %}
+  {%- if server.servers is defined %}
+    {%- set ipa_servers = server.servers %}
+  {%- else %}
+    {%- if server.hostname is defined %}
+      {%- set ipa_servers = [server.hostname] %}
+    {%- else %}
+      {%- set ipa_servers = [grains['fqdn']] %}
+    {%- endif %}
+  {%- endif %}
+{%- endif %}
