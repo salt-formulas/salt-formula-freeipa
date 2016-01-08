@@ -1,8 +1,9 @@
-{%- from "freeipa/map.jinja" import client, server with context %}
+{%- from "freeipa/map.jinja" import client, server, ipa_servers with context %}
 doc:
   name: freeipa
   description: FreeIPA Identity Management
   role:
+    {%- if pillar.freeipa.client is defined %}
     client:
       name: client
       param:
@@ -14,9 +15,11 @@ doc:
           value: {{ client.realm }}
         {%- if client.server is defined %}
         server:
-          name: "FreeIPA Server"
-          value: {{ client.server }}
+          name: "FreeIPA Servers"
+          value: {{ ipa_servers|join(',') }}
         {%- endif %}
+    {%- endif %}
+    {%- if pillar.freeipa.server is defined %}
     server:
       name: server
       param:
@@ -26,3 +29,10 @@ doc:
         realm:
           name: "FreeIPA Realm"
           value: {{ server.realm }}
+        servers:
+          name: "FreeIPA Servers"
+          value: {{ ipa_servers|join(',') }}
+        type:
+          name: "FreeIPA Server type"
+          value: {% if ipa_servers.0 == server.get('hostname', grains['fqdn']) %}master{% else %}replica{% endif %}
+    {%- endif %}
