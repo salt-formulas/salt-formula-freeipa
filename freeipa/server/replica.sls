@@ -5,19 +5,16 @@ include:
 
 {#
  Replica needs to be prepared first on master using
-   ipa-replica-prepare ipareplica.example.com --ip-address 192.168.1.2
+   ipa-replica-prepare ipareplica.example.com --ip-address 192.168.1.2 -p {{ server.ldap.password }}
  and stored in /var/lib/ipa/replica-info-ipareplica.example.com.gpg
  #}
 
-freeipa_replica_install:
+freeipa_server_install:
   cmd.run:
     - name: >
         ipa-replica-install
-        --realm {{ server.realm }}
-        --domain {{ server.domain }}
-        --hostname {% if server.hostname is defined %}{{ server.hostname }}{% else %}{{ grains['fqdn'] }}{% endif %}
-        --ds-password {{ server.ldap.password }}
-        --admin-password {{ server.admin.password }}
+        --password {{ server.ldap.password }}
+        -w {{ server.admin.password }}
         --ssh-trust-dns
         {%- if not server.get('ntp', {}).get('enabled', True) %} --no-ntp{%- endif %}
         {%- if server.get('dns', {}).get('enabled', True) %} --setup-dns{%- endif %}
@@ -49,4 +46,4 @@ freeipa_connect_replicas:
       - /usr/local/sbin/ipa_replica_connect.sh
     - require:
       - file: ipa_replica_connect_script
-      - cmd: freeipa_replica_install
+      - cmd: freeipa_server_install

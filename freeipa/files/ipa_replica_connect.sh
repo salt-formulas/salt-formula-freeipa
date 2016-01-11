@@ -1,4 +1,4 @@
-#!bash -x
+#!/bin/bash -x
 # Look for list of my connected nodes, compare it to list of all nodes and
 # connect missing ones
 
