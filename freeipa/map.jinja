@@ -5,6 +5,12 @@ Debian:
   mkhomedir: true
   dns:
     updates: true
+RedHat:
+  pkgs:
+  - ipa-client
+  mkhomedir: false
+  dns:
+    updates: true
 {%- endload %}
 
 {%- set client = salt['grains.filter_by'](client_defaults, merge=salt['pillar.get']('freeipa:client')) %}
