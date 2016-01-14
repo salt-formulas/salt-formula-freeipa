@@ -14,6 +14,7 @@ ldap_conf:
     - name: /etc/ldap/ldap.conf
     - template: jinja
     - source: salt://freeipa/files/ldap.conf
+    - makedirs: True
 
 {%- if client.get('mkhomedir', True) and server.get('mkhomedir', True) %}
 # This should be shipped by package and setup with --mkhomedir above, but
