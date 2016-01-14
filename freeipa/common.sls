@@ -37,9 +37,12 @@ pam_auth_update:
 # Workaround bug
 # https://bugs.launchpad.net/ubuntu/+source/freeipa/+bug/1492226
 # before freeipa-client version 4.1.4 is in trusty
+{%- if grains.os_family == 'Debian' %}
 freeipa_client_fix_1492226:
   cmd.run:
     - name: sed -i "/^services/s/$/, sudo/" /etc/sssd/sssd.conf
     - unless: grep services /etc/sssd/sssd.conf | grep sudo >/dev/null
     - watch_in:
       - service: sssd_service
+{%- endif %}
+
