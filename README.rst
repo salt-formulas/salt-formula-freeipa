@@ -49,6 +49,17 @@ Server
           ldap:
             password: secretpassword
 
+Disable LDAP access logs but enable audit
+
+.. code-block:: yaml
+
+    freeipa:
+      server:
+        ldap:
+          logging:
+            access: false
+            audit: true
+
 Read more
 =========
 
