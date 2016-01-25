@@ -11,6 +11,7 @@ freeipa:
     otp: password
 openssh:
   server:
+    enabled: true
     public_key_auth: true
     gssapi_auth: true
     kerberos_auth: false

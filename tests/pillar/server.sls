@@ -1,5 +1,6 @@
 freeipa:
   server:
+    enabled: true
     realm: LOCAL
     domain: local
     servers:
@@ -14,6 +15,7 @@ freeipa:
         audit: true
 openssh:
   server:
+    enabled: true
     public_key_auth: true
     gssapi_auth: true
     kerberos_auth: false
