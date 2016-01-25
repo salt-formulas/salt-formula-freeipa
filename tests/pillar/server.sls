@@ -13,6 +13,8 @@ freeipa:
       logging:
         access: false
         audit: true
+      minssf: 56
+      anonymous: false
 openssh:
   server:
     enabled: true
