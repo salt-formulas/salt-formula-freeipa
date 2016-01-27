@@ -9,6 +9,14 @@ freeipa:
     domain: local
     realm: LOCAL
     otp: password
+    keytab:
+      /etc/apache2/ipa.keytab:
+        mode: 0640
+        user: root
+        group: www-data
+        identities:
+          - service: HTTP
+            host: test.example.com
 openssh:
   server:
     enabled: true

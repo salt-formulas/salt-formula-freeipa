@@ -37,6 +37,12 @@ RedHat:
   {%- else %}
     {%- set ipa_servers = [client.server] %}
   {%- endif %}
+
+  {%- if client.hostname is defined %}
+    {%- set ipa_host = client.hostname %}
+  {%- else %}
+    {%- set ipa_host = grains['fqdn'] %}
+  {%- endif %}
 {%- endif %}
 
 {%- if pillar.freeipa.server is defined %}
