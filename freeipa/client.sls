@@ -42,10 +42,11 @@ freeipa_keytab_{{ keytab_file }}:
 {%- for identity in keytab.get("identities", []) %}
 freeipa_keytab_{{ keytab_file }}_{{ identity.service }}_{{ identity.get('host', ipa_host) }}:
   cmd.run:
-    - name: "kinit host/{{ ipa_host }} && ipa-getkeytab -k {{ keytab_file }} -p {{ identity.service }}/{{ identity.get('host', ipa_host) }}; E=$?; kdestroy; exit $E"
+    - name: "kinit -kt /etc/krb5.keytab host/{{ ipa_host }} && ipa-getkeytab -k {{ keytab_file }} -s {{ client.server }} -p {{ identity.service }}/{{ identity.get('host', ipa_host) }}; E=$?; kdestroy; exit $E"
     - unless: "kinit -kt {{ keytab_file }} {{ identity.service }}/{{ identity.get('host', ipa_host) }}; E=$?; /usr/bin/kdestroy; exit $E"
     - require:
       - cmd: freeipa_client_install
+    - require_in:
       - file: freeipa_keytab_{{ keytab_file }}
 {%- endfor %}
 
