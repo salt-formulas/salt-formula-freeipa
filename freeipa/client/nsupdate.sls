@@ -13,12 +13,12 @@ include:
     - defaults:
         name: {{ host.name }}
         {%- if host.ipv4 is not defined and host.name == ipa_host %}
-        ipv4: {{ grains['ip4_interfaces:eth0'][0]|default([]) }}
+        ipv4: ["{{ grains['ip4_interfaces:eth0'][0]|default([]) }}"]
         {%- else %}
         ipv4: {{ host.ipv4|default([]) }}
         {%- endif %}
         {%- if host.ipv6 is not defined and host.name == ipa_host %}
-        ipv6: {{ grains['ip6_interfaces:eth0'][0]|default([]) }}
+        ipv6: ["{{ grains['ip6_interfaces:eth0'][0]|default([]) }}"]
         {%- else %}
         ipv6: {{ host.ipv6|default([]) }}
         {%- endif %}
