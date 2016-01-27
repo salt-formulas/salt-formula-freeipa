@@ -1,0 +1,13 @@
+update delete {{ name }}. IN A
+update delete {{ name }}. IN AAAA
+send
+
+{%- for ip in ipv4 %}
+update add {{ name }}. {{ ttl }} IN A {{ ip }}
+{%- endfor %}
+
+{%- for ip in ipv6 %}
+update add {{ name }}. {{ ttl }} IN AAAA {{ ip }}
+{%- endfor %}
+
+send

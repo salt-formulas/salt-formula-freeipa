@@ -1,0 +1,3 @@
+update delete {{ name }}. IN A
+update delete {{ name }}. IN AAAA
+send

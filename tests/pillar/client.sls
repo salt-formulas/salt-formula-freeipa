@@ -17,6 +17,19 @@ freeipa:
         identities:
           - service: HTTP
             host: test.example.com
+          - service: host
+            host: anothertest.example.com
+    nsupdate:
+      - name: test.example.com
+        ipv4:
+          - 8.8.8.8
+        ipv6:
+          - 2a00:1450:4001:80a::1009
+        ttl: 1800
+        keytab: /etc/krb5.keytab
+      - name: anothertest.example.com
+        ipv4:
+          - 8.8.8.8
 openssh:
   server:
     enabled: true

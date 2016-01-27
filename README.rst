@@ -34,6 +34,21 @@ If you are using openssh formula, this is needed for FreeIPA authentication:
           command: /usr/bin/sss_ssh_authorizedkeys
           user: nobody
 
+Update DNS records using nsupdate:
+
+.. code-block:: yaml
+
+    freeipa:
+      client:
+        nsupdate:
+          - name: test.example.com
+            ipv4:
+              - 8.8.8.8
+            ipv6:
+              - 2a00:1450:4001:80a::1009
+            ttl: 1800
+            keytab: /etc/krb5.keytab
+
 Server
 ------
 
