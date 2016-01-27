@@ -1,3 +1,4 @@
+{%- if server is defined %}server {{ server }}{%- endif %}
 update delete {{ name }}. IN A
 update delete {{ name }}. IN AAAA
 send

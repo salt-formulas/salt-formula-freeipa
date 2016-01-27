@@ -10,8 +10,8 @@ freeipa_keytab_{{ keytab_file }}:
   file.managed:
     - name: {{ keytab_file }}
     - mode: {{ keytab.get("mode", 0600) }}
-    - user: {{ keytab.get("user", root) }}
-    - group: {{ keytab.get("group", root) }}
+    - user: {{ keytab.get("user", "root") }}
+    - group: {{ keytab.get("group", "root") }}
 
 {%- for identity in keytab.get("identities", []) %}
 freeipa_keytab_{{ keytab_file }}_{{ identity.service }}_{{ identity.get('host', ipa_host) }}:

@@ -23,6 +23,9 @@ include:
         ipv6: {{ host.ipv6|default([]) }}
         {%- endif %}
         ttl: {{ host.get('ttl', 1800) }}
+        {%- if host.server is defined %}
+        server: {{ host.server }}
+        {%- endif %}
     - watch_in:
       - cmd: nsupdate_{{ host.name }}
     - require:
@@ -38,6 +41,11 @@ include:
     - source: salt://freeipa/files/nsupdate-delete
     - defaults:
         name: {{ host.name }}
+        {%- if host.server is defined %}
+        server: {{ host.server }}
+        {%- endif %}
+    - require:
+      - file: /etc/nsupdate-{{ host.name }}
 
 nsupdate_{{ host.name }}:
   cmd.wait:
