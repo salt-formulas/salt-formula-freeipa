@@ -4,11 +4,15 @@ update delete {{ name }}. IN AAAA
 send
 
 {%- for ip in ipv4 %}
+{%- if ip != '127.0.0.1' and ip != '127.0.1.1' %}
 update add {{ name }}. {{ ttl }} IN A {{ ip }}
+{%- endif %}
 {%- endfor %}
 
 {%- for ip in ipv6 %}
+{%- if ip != '::1' %}
 update add {{ name }}. {{ ttl }} IN AAAA {{ ip }}
+{%- endif %}
 {%- endfor %}
 
 send
