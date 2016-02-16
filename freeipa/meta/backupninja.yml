@@ -4,6 +4,4 @@ backup:
     - /var/lib/ipa/backup
     fs_excludes: []
     actions:
-      - cmd: |
-          rm -rf /var/lib/ipa/backup/*
-          ipa-backup -q --data --online
+      - cmd: "rm -rf /var/lib/ipa/backup/*; ipa-backup -q --data --online"
