@@ -1,7 +1,7 @@
 applications:
 - freeipa
 classes:
-- service.freeipa.support
+- service.freeipa.server.support
 parameters:
   freeipa:
     server:

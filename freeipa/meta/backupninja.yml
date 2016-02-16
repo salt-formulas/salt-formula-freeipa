@@ -1,0 +1,9 @@
+backup:
+  freeipa:
+    fs_includes:
+    - /var/lib/ipa/backup
+    fs_excludes: []
+    actions:
+      - cmd: |
+          rm -rf /var/lib/ipa/backup/*
+          ipa-backup -v --data --online
