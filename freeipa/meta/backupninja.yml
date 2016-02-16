@@ -6,4 +6,4 @@ backup:
     actions:
       - cmd: |
           rm -rf /var/lib/ipa/backup/*
-          ipa-backup -v --data --online
+          ipa-backup -q --data --online
