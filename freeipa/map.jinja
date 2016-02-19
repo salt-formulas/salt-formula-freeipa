@@ -26,7 +26,8 @@ Debian:
   named_conf: /etc/bind/named.conf
 RedHat:
   pkgs:
-  - freeipa-server
+  - ipa-server
+  - ipa-server-dns
   named_service: named
   named_conf: /etc/named.conf
 {%- endload %}
