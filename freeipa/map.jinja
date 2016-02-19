@@ -6,12 +6,14 @@ Debian:
   mkhomedir: true
   dns:
     updates: true
+  ldap_conf: /etc/openldap/ldap.conf
 RedHat:
   pkgs:
   - ipa-client
   mkhomedir: true
   dns:
     updates: true
+  ldap_conf: /etc/openldap/ldap.conf
 {%- endload %}
 
 {%- set client = salt['grains.filter_by'](client_defaults, merge=salt['pillar.get']('freeipa:client')) %}

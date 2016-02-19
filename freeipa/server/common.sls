@@ -78,7 +78,7 @@ named_service:
 
 named_disable_recursion:
   file.replace:
-    - name: /etc/bind/named.conf
+    - name: {{ server.named_conf }}
     - pattern: 'allow-recursion \{ any; \};'
     - repl: 'allow-recursion { localhost; };'
     - require:

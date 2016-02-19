@@ -11,10 +11,22 @@ sssd_service:
 
 ldap_conf:
   file.managed:
-    - name: /etc/ldap/ldap.conf
+    - name: {{ client.ldap_conf }}
     - template: jinja
     - source: salt://freeipa/files/ldap.conf
     - makedirs: True
+
+{%- if grains.os_family == 'RedHat' %}
+ldap_conf_nss:
+  file.absent:
+    - name: /etc/ldap.conf
+
+nss_packages_absent:
+  pkg.removed:
+    - names: ['nss-pam-ldapd', 'nslcd']
+    - watch_in:
+      - file: ldap_conf_nss
+{%- endif %}
 
 {%- if client.get('mkhomedir', True) and server.get('mkhomedir', True) %}
 {%- if grains.os_family == 'Debian' %}
