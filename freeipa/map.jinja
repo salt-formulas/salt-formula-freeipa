@@ -7,6 +7,7 @@ Debian:
   dns:
     updates: true
   ldap_conf: /etc/ldap/ldap.conf
+  krb5_conf: /etc/krb5.conf
 RedHat:
   pkgs:
   - ipa-client
@@ -14,6 +15,7 @@ RedHat:
   dns:
     updates: true
   ldap_conf: /etc/openldap/ldap.conf
+  krb5_conf: /etc/krb5.conf
 {%- endload %}
 
 {%- set client = salt['grains.filter_by'](client_defaults, merge=salt['pillar.get']('freeipa:client')) %}

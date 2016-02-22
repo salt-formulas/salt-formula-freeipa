@@ -31,5 +31,12 @@ freeipa_client_install:
       - cmd: freeipa_client_fix_1492226
       {%- endif %}
       - file: ldap_conf
+      - file: krb5_conf
+
+krb5_conf:
+  file.managed:
+    - name: {{ client.krb5_conf }}
+    - template: jinja
+    - source: salt://freeipa/files/krb5.conf
 
 {%- endif %}
