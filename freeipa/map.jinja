@@ -7,6 +7,7 @@ Debian:
   dns:
     updates: true
   ldap_conf: /etc/ldap/ldap.conf
+  sssd_conf: /etc/sssd/sssd.conf
   krb5_conf: /etc/krb5.conf
 RedHat:
   pkgs:
@@ -15,6 +16,7 @@ RedHat:
   dns:
     updates: true
   ldap_conf: /etc/openldap/ldap.conf
+  sssd_conf: /etc/sssd/sssd.conf
   krb5_conf: /etc/krb5.conf
 {%- endload %}
 
@@ -25,12 +27,16 @@ Debian:
   pkgs:
   - freeipa-server
   named_service: bind9
+  ldap_conf: /etc/openldap/ldap.conf
+  sssd_conf: /etc/sssd/sssd.conf
   named_conf: /etc/bind/named.conf
 RedHat:
   pkgs:
   - ipa-server
   - ipa-server-dns
   named_service: named-pkcs11
+  ldap_conf: /etc/openldap/ldap.conf
+  sssd_conf: /etc/sssd/sssd.conf
   named_conf: /etc/named.conf
 {%- endload %}
 

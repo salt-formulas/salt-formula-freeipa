@@ -27,8 +27,5 @@ freeipa_server_install:
     - require_in:
       - service: sssd_service
       - file: ldap_conf
-      {%- if grains.os_family == 'Debian' %}
-      - cmd: freeipa_client_fix_1492226
-      {%- endif %}
 
 {%- endif %}
