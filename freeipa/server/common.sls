@@ -2,6 +2,7 @@
 
 include:
 - freeipa.common
+- freeipa.server.dns
 
 freeipa_server_pkgs:
   pkg.installed:
@@ -67,31 +68,4 @@ ldap_disable_anonymous:
     - require:
       - cmd: freeipa_server_install
       - file: ldap_conf
-{%- endif %}
-
-{%- if server.get('dns', {}).get('enabled', True) %}
-named_service:
-  service.running:
-    - name: {{ server.named_service }}
-    - require:
-      - cmd: freeipa_server_install
-
-named_disable_recursion:
-  file.replace:
-    - name: {{ server.named_conf }}
-    - pattern: 'allow-recursion \{ any; \};'
-    - repl: 'allow-recursion { localhost; };'
-    - require:
-      - cmd: freeipa_server_install
-    - watch_in:
-      - service: named_service
-
-named_hide_version:
-  cmd.run:
-    - name: "sed -i -e 's/options {/options {\\n\tversion \"hidden\";/' {{ server.named_conf }}"
-    - unless: "grep 'version \"hidden\";' {{ server.named_conf }}"
-    - require:
-      - cmd: freeipa_server_install
-    - watch_in:
-      - service: named_service
 {%- endif %}
