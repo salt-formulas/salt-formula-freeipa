@@ -2,3 +2,16 @@
 update delete {{ name }}. IN A
 update delete {{ name }}. IN AAAA
 send
+
+{%- if reverse %}
+{%- for ip in ipv4 %}
+{%- if ip != '127.0.0.1' and ip != '127.0.1.1' %}
+update delete {{ ip.split('.')|reverse|join('.') }}.in-addr.arpa PTR
+{%- endif %}
+{%- endfor %}
+send
+{%- endif %}
+
+{#-
+vim: syntax=jinja
+#}

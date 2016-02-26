@@ -26,6 +26,7 @@ include:
         {%- if host.server is defined %}
         server: {{ host.server }}
         {%- endif %}
+        reverse: {{ host.get('reverse', False) }}
     - watch_in:
       - cmd: nsupdate_{{ host.name }}
     - require:
@@ -41,9 +42,20 @@ include:
     - source: salt://freeipa/files/nsupdate-delete
     - defaults:
         name: {{ host.name }}
+        {%- if host.ipv4 is not defined and host.name == ipa_host %}
+        ipv4: ["{{ grains['ip4_interfaces'][host.get('interface', 'eth0')][0]|default([]) }}"]
+        {%- else %}
+        ipv4: {{ host.ipv4|default([]) }}
+        {%- endif %}
+        {%- if host.ipv6 is not defined and host.name == ipa_host %}
+        ipv6: ["{{ grains['ip6_interfaces'][host.get('interface', 'eth0')][0]|default([]) }}"]
+        {%- else %}
+        ipv6: {{ host.ipv6|default([]) }}
+        {%- endif %}
         {%- if host.server is defined %}
         server: {{ host.server }}
         {%- endif %}
+        reverse: {{ host.get('reverse', False) }}
     - require:
       - file: /etc/nsupdate-{{ host.name }}
 
