@@ -27,7 +27,7 @@ named_hide_version:
     - watch_in:
       - service: named_service
 
-{%- for name, zone in server.dns.zone.iteritems() %}
+{%- for name, zone in server.get('dns', {}).get('zone', {}).iteritems() %}
 {%- if zone.get('enabled', True) %}
 freeipa_dnszone_{{ name }}:
   cmd.run:
