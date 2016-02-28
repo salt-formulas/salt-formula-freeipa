@@ -34,7 +34,7 @@ freeipa_dnszone_{{ name }}:
     - name: >
         echo {{ server.admin.password }} | kinit admin &&
         ipa dnszone-add "{{ name }}"
-        {%- if zone.admin is defined %} --admin-email={{ zone.admin|replace('@', '.') }}{%- endif %}
+        {%- if zone.admin is defined %} --admin-email={{ zone.admin|replace('@', '.') }}.{%- endif %}
         {%- if zone.refresh is defined %} --refresh={{ zone.refresh }}{%- endif %}
         {%- if zone.retry is defined %} --retry={{ zone.retry }}{%- endif %}
         {%- if zone.expire is defined %} --expire={{ zone.expire }}{%- endif %}
