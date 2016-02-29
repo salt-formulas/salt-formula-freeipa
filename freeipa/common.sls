@@ -15,6 +15,9 @@ sssd_conf:
   file.managed:
     - name: {{ client.sssd_conf }}
     - template: jinja
+    - user: root
+    - group: root
+    - mode: 600
     - source: salt://freeipa/files/sssd.conf
     - makedirs: True
 
