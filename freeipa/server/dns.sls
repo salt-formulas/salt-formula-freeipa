@@ -42,7 +42,7 @@ freeipa_dnszone_{{ name }}:
         {%- if zone.ttl is defined %} --ttl={{ zone.ttl }}{%- endif %}
         --dynamic-update={{ 1 if zone.get('dynamic', {}).get('enabled', False) else 0 }}
         {%- if zone.get('dynamic', {}).policy is defined %} --update-policy="{%- for policy in zone.dynamic.policy %}{{ policy.get('permission', 'grant') }} {{ policy.identity }} {{ policy.match }} {{ policy.get('tname', '') }} {{ policy.get('rr', '') }};{%- endfor %}"{%- endif %}
-        {%- if zone.transfer is defined %} --allow-transfer="{{ zone.transfer|join('; ') }}"{%- endif %}
+        {%- if zone.transfer is defined %} --allow-transfer="{{ zone.transfer|join(';') }}"{%- endif %}
         {%- if zone.nameservers is defined %} --name-server="{{ zone.nameservers[0] }}."{%- endif %}
         ; ret=$?; kdestroy; exit $ret
     - unless: "echo {{ server.admin.password }} | kinit admin && ipa dnszone-find --name={{ name }}; ret=$?; kdestroy; exit $ret"
