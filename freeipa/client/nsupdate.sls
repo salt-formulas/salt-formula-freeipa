@@ -4,6 +4,9 @@
 include:
   - freeipa.client
 
+{%- set default_ipv4 = salt['cmd.run']("echo -n $(ip r get 8.8.8.8|grep -v -e 'dev lo'|head -1|awk '{print $NF}')") %}
+{%- set default_ipv6 = salt['cmd.run']("echo -n $(ip r get 2a00:1450:400d:802::200e|grep -v -e 'dev lo'|head -1|awk '{print $NF}')") %}
+
 {%- for host in client.get("nsupdate", {}) %}
 
 /etc/nsupdate-{{ host.name }}:
@@ -12,13 +15,13 @@ include:
     - source: salt://freeipa/files/nsupdate
     - defaults:
         name: {{ host.name }}
-        {%- if host.ipv4 is not defined and host.name == ipa_host %}
-        ipv4: ["{{ grains['ip4_interfaces'][host.get('interface', 'eth0')][0]|default([]) }}"]
+        {%- if host.ipv4 is not defined and host.name == ipa_host and default_ipv4 != '' %}
+        ipv4: ["{{ default_ipv4 }}"]
         {%- else %}
         ipv4: {{ host.ipv4|default([]) }}
         {%- endif %}
-        {%- if host.ipv6 is not defined and host.name == ipa_host %}
-        ipv6: ["{{ grains['ip6_interfaces'][host.get('interface', 'eth0')][0]|default([]) }}"]
+        {%- if host.ipv6 is not defined and host.name == ipa_host and default_ipv6 != '' %}
+        ipv6: ["{{ default_ipv6 }}"]
         {%- else %}
         ipv6: {{ host.ipv6|default([]) }}
         {%- endif %}
@@ -42,13 +45,13 @@ include:
     - source: salt://freeipa/files/nsupdate-delete
     - defaults:
         name: {{ host.name }}
-        {%- if host.ipv4 is not defined and host.name == ipa_host %}
-        ipv4: ["{{ grains['ip4_interfaces'][host.get('interface', 'eth0')][0]|default([]) }}"]
+        {%- if host.ipv4 is not defined and host.name == ipa_host and default_ipv4 != '' %}
+        ipv4: ["{{ default_ipv4 }}"]
         {%- else %}
         ipv4: {{ host.ipv4|default([]) }}
         {%- endif %}
-        {%- if host.ipv6 is not defined and host.name == ipa_host %}
-        ipv6: ["{{ grains['ip6_interfaces'][host.get('interface', 'eth0')][0]|default([]) }}"]
+        {%- if host.ipv6 is not defined and host.name == ipa_host and default_ipv6 != '' %}
+        ipv6: ["{{ default_ipv6 }}"]
         {%- else %}
         ipv6: {{ host.ipv6|default([]) }}
         {%- endif %}
