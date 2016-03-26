@@ -11,7 +11,11 @@ Debian:
   krb5_conf: /etc/krb5.conf
 RedHat:
   pkgs:
+  {% if grains.os == 'Fedora' %}
+  - freeipa-client
+  {% else %}
   - ipa-client
+  {% endif %}
   mkhomedir: true
   dns:
     updates: true
@@ -32,8 +36,13 @@ Debian:
   named_conf: /etc/bind/named.conf
 RedHat:
   pkgs:
+  {% if grains.os == 'Fedora' %}
+  - freeipa-server
+  - freeipa-server-dns
+  {% else %}
   - ipa-server
   - ipa-server-dns
+  {% endif %}
   named_service: named-pkcs11
   ldap_conf: /etc/openldap/ldap.conf
   sssd_conf: /etc/sssd/sssd.conf
