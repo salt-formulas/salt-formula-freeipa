@@ -54,15 +54,14 @@ Server
 
 .. code-block:: yaml
 
-    parameters:
-      freeipa:
-        server:
-          realm: IPA.EXAMPLE.COM
-          domain: ipa.example.com
-          admin:
-            password: secretpassword
-          ldap:
-            password: secretpassword
+    freeipa:
+      server:
+        realm: IPA.EXAMPLE.COM
+        domain: ipa.example.com
+        admin:
+          password: secretpassword
+        ldap:
+          password: secretpassword
 
 Disable LDAP access logs but enable audit
 
