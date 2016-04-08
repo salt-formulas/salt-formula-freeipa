@@ -1,0 +1,8 @@
+{%- from "freeipa/map.jinja" import server, ipa_servers with context -%}
+check:
+  local_freeipa_consistency_{{ grains['fqdn'] }}:
+    command: "PATH=$PATH:/etc/sensu/plugins ipa_check_consistency -n -d {{ server.domain }} -p /etc/dirsrv/password -H '{{ ipa_servers|join(' ') }}'"
+    interval: 60
+    occurrences: 3
+    subscribers:
+    - {{ grains['fqdn']|replace('.', '-') }}

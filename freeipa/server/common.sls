@@ -3,10 +3,24 @@
 include:
 - freeipa.common
 - freeipa.server.dns
+{%- if pillar.get('sensu', {}).get('client', {}).get('enabled', False) %}
+- sensu.client
+{%- endif %}
 
 freeipa_server_pkgs:
   pkg.installed:
     - names: {{ server.pkgs }}
+
+/etc/dirsrv/password:
+  file.managed:
+    - contents: {{ server.ldap.password }}
+    - mode: 640
+    - owner: root
+    {%- if pillar.get('sensu', {}).get('client', {}).get('enabled', False) %}
+    - group: sensu
+    - require:
+      - pkg: sensu_client_packages
+    {%- endif %}
 
 ldap_secure_binds:
   cmd.run:
