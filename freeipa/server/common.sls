@@ -11,13 +11,13 @@ freeipa_server_pkgs:
 ldap_secure_binds:
   cmd.run:
     - name: |
-          ldapmodify -D 'cn=directory manager' -w {{ server.ldap.password }} -Z << EOF
+          ldapmodify -h localhost -D 'cn=directory manager' -w {{ server.ldap.password }} -Z << EOF
           dn: cn=config
           changetype: modify
           replace: nsslapd-minssf
           nsslapd-minssf: {{ server.ldap.minssf }}
           EOF
-    - unless: "ldapsearch -D 'cn=directory manager' -w {{ server.ldap.password }} -b 'cn=config' -Z | grep 'nsslapd-minssf: {{ server.ldap.minssf }}'"
+    - unless: "ldapsearch -h localhost -D 'cn=directory manager' -w {{ server.ldap.password }} -b 'cn=config' -Z | grep 'nsslapd-minssf: {{ server.ldap.minssf }}'"
     - require:
       - cmd: freeipa_server_install
       - file: ldap_conf
@@ -26,13 +26,13 @@ ldap_secure_binds:
 ldap_logs_audit:
   cmd.run:
     - name: |
-          ldapmodify -D 'cn=directory manager' -w {{ server.ldap.password }} -Z << EOF
+          ldapmodify -h localhost -D 'cn=directory manager' -w {{ server.ldap.password }} -Z << EOF
           dn: cn=config
           changetype: modify
           replace: nsslapd-auditlog-logging-enabled
           nsslapd-auditlog-logging-enabled: {% if server.ldap.logging.audit %}on{% else %}off{% endif %}
           EOF
-    - unless: "ldapsearch -D 'cn=directory manager' -w {{ server.ldap.password }} -b 'cn=config' -Z | grep 'nsslapd-auditlog-logging-enabled: {% if server.ldap.logging.audit %}on{% else %}off{% endif %}'"
+    - unless: "ldapsearch -h localhost -D 'cn=directory manager' -w {{ server.ldap.password }} -b 'cn=config' -Z | grep 'nsslapd-auditlog-logging-enabled: {% if server.ldap.logging.audit %}on{% else %}off{% endif %}'"
     - require:
       - cmd: freeipa_server_install
       - file: ldap_conf
@@ -42,13 +42,13 @@ ldap_logs_audit:
 ldap_logs_access:
   cmd.run:
     - name: |
-          ldapmodify -D 'cn=directory manager' -w {{ server.ldap.password }} -Z << EOF
+          ldapmodify -h localhost -D 'cn=directory manager' -w {{ server.ldap.password }} -Z << EOF
           dn: cn=config
           changetype: modify
           replace: nsslapd-accesslog-logging-enabled
           nsslapd-accesslog-logging-enabled: {% if server.ldap.logging.access %}on{% else %}off{% endif %}
           EOF
-    - unless: "ldapsearch -D 'cn=directory manager' -w {{ server.ldap.password }} -b 'cn=config' -Z | grep 'nsslapd-accesslog-logging-enabled: {% if server.ldap.logging.access %}on{% else %}off{% endif %}'"
+    - unless: "ldapsearch -h localhost -D 'cn=directory manager' -w {{ server.ldap.password }} -b 'cn=config' -Z | grep 'nsslapd-accesslog-logging-enabled: {% if server.ldap.logging.access %}on{% else %}off{% endif %}'"
     - require:
       - cmd: freeipa_server_install
       - file: ldap_conf
@@ -58,13 +58,13 @@ ldap_logs_access:
 ldap_disable_anonymous:
   cmd.run:
     - name: |
-          ldapmodify -D 'cn=directory manager' -w {{ server.ldap.password }} -Z << EOF
+          ldapmodify -h localhost -D 'cn=directory manager' -w {{ server.ldap.password }} -Z << EOF
           dn: cn=config
           changetype: modify
           replace: nsslapd-allow-anonymous-access
           nsslapd-allow-anonymous-access: off
           EOF
-    - unless: "ldapsearch -D 'cn=directory manager' -w {{ server.ldap.password }} -b 'cn=config' -Z | grep 'nsslapd-allow-anonymous-access: off'"
+    - unless: "ldapsearch -h localhost -D 'cn=directory manager' -w {{ server.ldap.password }} -b 'cn=config' -Z | grep 'nsslapd-allow-anonymous-access: off'"
     - require:
       - cmd: freeipa_server_install
       - file: ldap_conf
