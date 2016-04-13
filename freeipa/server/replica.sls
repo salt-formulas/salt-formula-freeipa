@@ -43,6 +43,8 @@ freeipa_connect_replicas:
     - names:
       - echo "{{ server.admin.password }}" | kinit admin
       - /usr/local/sbin/ipa_replica_connect.sh
+    - env:
+      - KRB5CCNAME: /tmp/krb5cc_salt
     - require:
       - file: ipa_replica_connect_script
       - cmd: freeipa_server_install

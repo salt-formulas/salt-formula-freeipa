@@ -65,6 +65,8 @@ include:
 nsupdate_{{ host.name }}:
   cmd.wait:
     - name: "kinit -kt {{ host.get('keytab', '/etc/krb5.keytab') }} host/{{ host.name }} && nsupdate -g /etc/nsupdate-{{ host.name }}; E=$?; /usr/bin/kdestroy; exit $E"
+    - env:
+      - KRB5CCNAME: /tmp/krb5cc_salt
 
 {%- endfor %}
 

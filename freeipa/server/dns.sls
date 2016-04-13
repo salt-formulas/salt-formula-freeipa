@@ -46,6 +46,8 @@ freeipa_dnszone_{{ name }}:
         {%- if zone.nameservers is defined %} --name-server="{{ zone.nameservers[0] }}."{%- endif %}
         ; ret=$?; kdestroy; exit $ret
     - unless: "echo {{ server.admin.password }} | kinit admin && ipa dnszone-find --name={{ name }}; ret=$?; kdestroy; exit $ret"
+    - env:
+      - KRB5CCNAME: /tmp/krb5cc_salt
     - require:
       - cmd: freeipa_server_install
       - file: ldap_conf
@@ -60,6 +62,8 @@ freeipa_dnszone_{{ name }}_nameservers:
         --ns-rec="{{ server }}."
         {%- endfor %}
         ; ret=$?; kdestroy; exit $ret
+    - env:
+      - KRB5CCNAME: /tmp/krb5cc_salt
     - watch:
       - cmd: freeipa_dnszone_{{ name }}
 {%- endif %}
