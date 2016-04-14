@@ -2,7 +2,8 @@ Source: salt-formula-freeipa
 Maintainer: Filip Pytloun <filip.pytloun@tcpcloud.eu>
 Section: admin
 Priority: optional
-Build-Depends: debhelper (>= 9)
+Build-Depends: debhelper (>= 9), salt-master, python, python-yaml,
+ salt-formula-openssh
 Standards-Version: 3.9.6
 Homepage: http://www.tcpcloud.eu
 Vcs-Browser: https://github.com/tcpcloud/salt-formula-freeipa
@@ -10,6 +11,6 @@ Vcs-Git: https://github.com/tcpcloud/salt-formula-freeipa.git
 
 Package: salt-formula-freeipa
 Architecture: all
-Depends: ${misc:Depends}, salt-master, reclass
+Depends: ${misc:Depends}, salt-master, reclass, salt-formula-openssh
 Description: freeipa salt formula
  Install and configure freeipa system.

@@ -1,6 +1,0 @@
-freeipa/*             /usr/share/salt-formulas/env/freeipa/
-metadata/service/*      /usr/share/salt-formulas/reclass/service/freeipa/
-# Not all salt formulas has custom states and modules,
-# uncomment to install them
-# _modules/*         /usr/share/salt-formulas/env/_modules/
-# _states/*         /usr/share/salt-formulas/env/_states/
