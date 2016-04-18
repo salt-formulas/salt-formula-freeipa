@@ -49,6 +49,20 @@ Update DNS records using nsupdate:
             ttl: 1800
             keytab: /etc/krb5.keytab
 
+Request certificate using certmonger:
+
+.. code-block:: yaml
+
+    freeipa:
+      client:
+        cert:
+          "HTTP/www.example.com":
+            user: root
+            group: www-data
+            mode: 640
+            cert: /etc/ssl/certs/http-www.example.com.crt
+            key: /etc/ssl/private/http-www.example.com.key
+
 Server
 ------
 

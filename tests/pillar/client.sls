@@ -30,6 +30,13 @@ freeipa:
       - name: anothertest.example.com
         ipv4:
           - 8.8.8.8
+    cert:
+      "HTTP/www.example.com":
+        user: root
+        group: www-data
+        mode: 640
+        cert: /etc/ssl/certs/http-www.example.com.crt
+        key: /etc/ssl/private/http-www.example.com.key
 openssh:
   server:
     enabled: true

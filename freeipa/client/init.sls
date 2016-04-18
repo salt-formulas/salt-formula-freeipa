@@ -5,6 +5,7 @@ include:
 - freeipa.common
 - freeipa.client.keytab
 - freeipa.client.nsupdate
+- freeipa.client.cert
 
 freeipa_client_pkgs:
   pkg.installed:
