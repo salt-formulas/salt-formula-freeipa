@@ -37,6 +37,15 @@ freeipa_cert_{{ key_file }}_key_permissions:
     - watch:
       - cmd: freeipa_cert_{{ principal }}
 
+freeipa_cert_{{ cert_file }}_cert_permissions:
+  file.managed:
+    - name: {{ cert_file }}
+    - mode: {{ cert.get("mode", 0600) }}
+    - user: {{ cert.get("user", "root") }}
+    - group: {{ cert.get("group", "root") }}
+    - watch:
+      - cmd: freeipa_cert_{{ principal }}
+
 {%- endfor %}
 
 {%- endif %}
