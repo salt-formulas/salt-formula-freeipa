@@ -5,6 +5,9 @@ include:
   - freeipa.client
 
 {%- for principal, cert in client.get("cert", {}).iteritems() %}
+{%- if cert.principal is defined %}
+  {%- set principal = cert.principal %}
+{%- endif %}
 {%- set pparts = principal.split('/') %}
 {%- set service = pparts[0] %}
 {%- set cn = pparts[1] %}
