@@ -4,6 +4,12 @@
 include:
   - freeipa.client
 
+freeipa_certmonger_service:
+  service.running:
+    - name: certmonger
+    - require:
+      - cmd: freeipa_client_install
+
 {%- for principal, cert in client.get("cert", {}).iteritems() %}
 {%- if cert.principal is defined %}
   {%- set principal = cert.principal %}
@@ -26,7 +32,7 @@ freeipa_cert_{{ principal }}:
         -K {{ principal }}
     - unless: "ipa-getcert list -t -f {{ cert_file }} | grep 'status: MONITORING'"
     - require:
-      - cmd: freeipa_client_install
+      - service: freeipa_certmonger_service
 
 freeipa_cert_{{ key_file }}_key_permissions:
   file.managed:
