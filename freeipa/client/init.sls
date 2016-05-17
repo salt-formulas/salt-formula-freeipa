@@ -1,11 +1,12 @@
 {%- from "freeipa/map.jinja" import client, ipa_host with context %}
-{%- if client.enabled %}
 
 include:
 - freeipa.common
 - freeipa.client.keytab
 - freeipa.client.nsupdate
 - freeipa.client.cert
+
+{%- if client.get('enabled', False) %}
 
 freeipa_client_pkgs:
   pkg.installed:

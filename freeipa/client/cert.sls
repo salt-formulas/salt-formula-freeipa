@@ -1,14 +1,21 @@
-{%- from "freeipa/map.jinja" import client, ipa_host with context %}
-{%- if client.enabled %}
+{%- from "freeipa/map.jinja" import client, server, ipa_host with context %}
 
 include:
+  {%- if server.get('enabled', False) %}
+  - freeipa.server
+  {%- else %}
   - freeipa.client
+  {%- endif %}
 
 freeipa_certmonger_service:
   service.running:
     - name: certmonger
     - require:
+      {%- if server.get('enabled', False) %}
+      - cmd: freeipa_server_install
+      {%- else %}
       - cmd: freeipa_client_install
+      {%- endif %}
 
 {%- for principal, cert in client.get("cert", {}).iteritems() %}
 {%- if cert.principal is defined %}
@@ -53,5 +60,3 @@ freeipa_cert_{{ cert_file }}_cert_permissions:
       - cmd: freeipa_cert_{{ principal }}
 
 {%- endfor %}
-
-{%- endif %}

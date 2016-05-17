@@ -1,8 +1,11 @@
-{%- from "freeipa/map.jinja" import client, ipa_host with context %}
-{%- if client.enabled %}
+{%- from "freeipa/map.jinja" import client, server, ipa_host with context %}
 
 include:
+  {%- if server.get('enabled', False) %}
+  - freeipa.server
+  {%- else %}
   - freeipa.client
+  {%- endif %}
 
 {%- set default_ipv4 = salt['cmd.run']("echo -n $(ip r get 8.8.8.8|grep -v -e 'dev lo'|head -1|awk '{print $NF}')") %}
 {%- set default_ipv6 = salt['cmd.run']("echo -n $(ip r get 2a00:1450:400d:802::200e|grep -v -e 'dev lo'|head -1|awk '{print $NF}')") %}
@@ -34,7 +37,11 @@ include:
       - cmd: nsupdate_{{ host.name }}
     - require:
       {%- if host.name == ipa_host %}
+      {%- if server.get('enabled', False) %}
+      - cmd: freeipa_server_install
+      {%- else %}
       - cmd: freeipa_client_install
+      {%- endif %}
       {%- else %}
       - cmd: freeipa_keytab_{{ host.get('keytab', '/etc/krb5.keytab') }}_host_{{ host.name }}
       {%- endif %}
@@ -69,5 +76,3 @@ nsupdate_{{ host.name }}:
       - KRB5CCNAME: /tmp/krb5cc_salt
 
 {%- endfor %}
-
-{%- endif %}

@@ -1,8 +1,11 @@
-{%- from "freeipa/map.jinja" import client, ipa_host with context %}
-{%- if client.enabled %}
+{%- from "freeipa/map.jinja" import client, server, ipa_host with context %}
 
 include:
+  {%- if server.get('enabled', False) %}
+  - freeipa.server
+  {%- else %}
   - freeipa.client
+  {%- endif %}
 
 {%- for keytab_file, keytab in client.get("keytab", {}).iteritems() %}
 
@@ -21,11 +24,13 @@ freeipa_keytab_{{ keytab_file }}_{{ identity.service }}_{{ identity.get('host', 
     - env:
       - KRB5CCNAME: /tmp/krb5cc_salt
     - require:
+      {%- if server.get('enabled', False) %}
+      - cmd: freeipa_server_install
+      {%- else %}
       - cmd: freeipa_client_install
+      {%- endif %}
     - require_in:
       - file: freeipa_keytab_{{ keytab_file }}
 {%- endfor %}
 
 {%- endfor %}
-
-{%- endif %}
