@@ -51,11 +51,19 @@ pam_mkhomedir_config:
     - require:
       - service: sssd_service
 
+# Workaround https://bugs.launchpad.net/ubuntu/+source/pam/+bug/682662
+# by custom wrapper script
+pam_enable_mkhomedir:
+  file.managed:
+    - name: /usr/local/bin/pam-enable-mkhomedir
+    - source: salt://freeipa/files/pam-enable-mkhomedir
+    - mode: 755
+    - require:
+      - service: sssd_service
+
 pam_auth_update:
   cmd.wait:
-    - name: pam-auth-update --force
-    - env:
-      - DEBIAN_FRONTEND: noninteractive
+    - name: /usr/local/bin/pam-enable-mkhomedir
     - watch:
       - file: pam_mkhomedir_config
 {%- endif %}
