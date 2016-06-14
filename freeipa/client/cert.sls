@@ -17,6 +17,16 @@ freeipa_certmonger_service:
       - cmd: freeipa_client_install
       {%- endif %}
 
+{%- if grains.os_family == 'RedHat' %}
+{#- Fix for Debian compatibility #}
+freeipa_certmonger_symlink:
+  file.symlink:
+    - name: /usr/lib/certmonger
+    - target: /usr/libexec/certmonger
+    - watch_in:
+      - service: freeipa_certmonger_service
+{%- endif %}
+
 {%- for principal, cert in client.get("cert", {}).iteritems() %}
 {%- if cert.principal is defined %}
   {%- set principal = cert.principal %}
