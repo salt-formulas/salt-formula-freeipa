@@ -37,6 +37,15 @@ freeipa_certmonger_symlink:
 {%- set cert_file = cert.get('cert', '/etc/ssl/certs/' + service|lower + '-' + cn + '.crt') %}
 {%- set key_file = cert.get('key', '/etc/ssl/private/' + service|lower + '-' + cn + '.key') %}
 
+{%- set key_dir = key_file|replace(key_file.split('/')[-1], "") %}
+{%- set cert_dir = cert_file|replace(cert_file.split('/')[-1], "") %}
+freeipa_cert_{{ principal }}_dirs:
+  file.directory:
+    - names:
+      - {{ key_dir }}
+      - {{ cert_dir }}
+    - makedirs: true
+
 freeipa_cert_{{ principal }}:
   cmd.run:
     - name: >
@@ -49,6 +58,7 @@ freeipa_cert_{{ principal }}:
         -K {{ principal }}
     - unless: "ipa-getcert list -t -f {{ cert_file }} | grep 'status: MONITORING'"
     - require:
+      - file: freeipa_cert_{{ principal }}_dirs
       - service: freeipa_certmonger_service
 
 freeipa_cert_{{ key_file }}_key_permissions:
