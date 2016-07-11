@@ -55,8 +55,13 @@ freeipa_cert_{{ principal }}:
         -N CN={{ cn }}
         -D {{ cn }}
         {%- if cert.mail is defined %} -E {{ cert.mail }}{%- endif %}
-        -K {{ principal }}
-    - unless: "ipa-getcert list -t -f {{ cert_file }} | grep 'status: MONITORING'"
+        -K {{ principal }};
+        i=0; while [ $i -lt 10 ]; do
+          ipa-getcert list -f {{ cert_file }} | grep 'status: MONITORING' && exit 0;
+          i=$[ $i+1 ]; sleep 2;
+        done;
+        exit 1
+    - unless: "ipa-getcert list -f {{ cert_file }} | grep 'status: MONITORING'"
     - require:
       - file: freeipa_cert_{{ principal }}_dirs
       - service: freeipa_certmonger_service
