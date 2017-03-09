@@ -13,18 +13,27 @@ freeipa_server_install:
   cmd.run:
     - name: >
         ipa-replica-install
-        --password {{ server.ldap.password }}
         -w {{ server.admin.password }}
         --ssh-trust-dns
         {%- if not server.get('ntp', {}).get('enabled', True) %} --no-ntp{%- endif %}
         {%- if server.get('dns', {}).get('enabled', True) %} --setup-dns{%- endif %}
         {%- if server.get('dns', {}).get('forwarders', []) %}{%- for forwarder in server.dns.forwarders %} --forwarder={{ forwarder }}{%- endfor %}{%- else %} --no-forwarders{%- endif %}
         {%- if server.get('mkhomedir', True) %} --mkhomedir{%- endif %}
-        --no-host-dns
+        {%- if server.get('no_host_dns', false) %} --no-host-dns{%- endif %}
+        {%- if server.get('ca', true) %} --setup-ca{%- endif %}
         --skip-conncheck
         --no-reverse
         --unattended
+        {%- if server.principal_user is defined %}
+        --principal {{ server.principal_user }}
+        --domain {{ server.domain }}
+        --realm {{ server.realm }}
+        --server {{ server.servers.0 }}
+        --hostname {{ grains['fqdn'] }}
+        {%- else %}
+        --password {{ server.ldap.password }}
         /var/lib/ipa/replica-info-{{ server.get('hostname', grains['fqdn']) }}.gpg
+        {%- endif %}
     - creates: /etc/ipa/default.conf
     - require:
       - pkg: freeipa_server_pkgs
@@ -32,19 +41,3 @@ freeipa_server_install:
       - service: sssd_service
       - file: ldap_conf
 
-ipa_replica_connect_script:
-  file.managed:
-    - name: /usr/local/sbin/ipa_replica_connect.sh
-    - source: salt://freeipa/files/ipa_replica_connect.sh
-    - mode: 0755
-
-freeipa_connect_replicas:
-  cmd.run:
-    - names:
-      - echo "{{ server.admin.password }}" | kinit admin
-      - /usr/local/sbin/ipa_replica_connect.sh
-    - env:
-      - KRB5CCNAME: /tmp/krb5cc_salt
-    - require:
-      - file: ipa_replica_connect_script
-      - cmd: freeipa_server_install

@@ -77,6 +77,32 @@ Server
         ldap:
           password: secretpassword
 
+Server definition for new verion of freeipa (4.3+). Replicas dont require generation of gpg file on master. But principal user has to be defined with
+
+.. code-block:: yaml
+
+    freeipa:
+      server:
+        realm: IPA.EXAMPLE.COM
+        domain: ipa.example.com
+        principal_user: admin
+        admin:
+          password: secretpassword
+        servers:
+        - idm01.ipa.example.com
+        - idm02.ipa.example.com
+        - idm03.ipa.example.com
+
+
+Disable CA. Default is True.
+
+.. code-block:: yaml
+
+    freeipa:
+      server:
+        ca: false
+
+
 Disable LDAP access logs but enable audit
 
 .. code-block:: yaml

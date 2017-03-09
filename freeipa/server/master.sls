@@ -19,6 +19,7 @@ freeipa_server_install:
         {%- if server.get('dns', {}).get('enabled', True) %} --setup-dns{%- endif %}
         {%- if server.get('dns', {}).get('forwarders', []) %}{%- for forwarder in server.dns.forwarders %} --forwarder={{ forwarder }}{%- endfor %}{%- else %} --no-forwarders{%- endif %}
         {%- if server.get('mkhomedir', True) %} --mkhomedir{%- endif %}
+        --auto-reverse
         --no-host-dns
         --unattended
     - creates: /etc/ipa/default.conf
