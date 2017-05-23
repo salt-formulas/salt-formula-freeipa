@@ -12,8 +12,9 @@ freeipa:
     install_principal:
       source: salt://freeipa/files/principal.keytab
       mode: 0600
-      user: "root"
-      group: "root
+      principal_user: "salt-service"
+      file_user: "root"
+      file_group: "root
     keytab:
       /etc/apache2/ipa.keytab:
         mode: 0640
