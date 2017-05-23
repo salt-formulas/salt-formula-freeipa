@@ -8,12 +8,12 @@ push_principal:
     - user: {{ client.get("install_principal", {}).get("user", "root") }}
     - group: {{ client.get("install_principal", {}).get("group", "root") }}
 get_ticket:
-  cmd.run:
+  cmd.shell:
     - name: kinit {{ client.get("install_principal", {}).get("user", "root") }}@{{ client.get("realm", "") }} -kt /tmp/salt-service.keytab:
     - require: 
       - file: push_principal
 ipa_host_add:
-  cmd.run:
+  cmd.shell:
     - name: >
         curl -k
         -H referer:https://{{ client.get("server", {}) }}/ipa
