@@ -10,7 +10,7 @@ include:
  #}
 
 freeipa_server_install:
-  cmd.shell:
+  cmd.run:
     - name: >
         ipa-replica-install
         -w {{ server.admin.password }}
