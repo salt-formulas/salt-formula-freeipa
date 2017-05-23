@@ -2,6 +2,9 @@
 
 include:
 - freeipa.common
+{%- if pillar.freeipa.client.install_principal is defined %}
+- freeipa.client.preinstall
+{%- endif %}
 - freeipa.client.keytab
 - freeipa.client.nsupdate
 - freeipa.client.cert
