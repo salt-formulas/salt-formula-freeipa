@@ -23,7 +23,11 @@ freeipa_client_install:
         --domain {{ client.domain }}
         {%- if client.realm is defined %} --realm {{ client.realm }}{%- endif %}
         --hostname {{ ipa_host }}
+        {%- if otp is defined %}
+        -w {{ otp }}
+        {%- else %}
         -w {{ client.otp }}
+        {%- endif %}
         {%- if client.get('mkhomedir', True) %} --mkhomedir{%- endif %}
         {%- if client.dns.updates %} --enable-dns-updates{%- endif %}
         --unattended
