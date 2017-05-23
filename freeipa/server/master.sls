@@ -5,7 +5,7 @@ include:
 - freeipa.server.common
 
 freeipa_server_install:
-  cmd.run:
+  cmd.shell:
     - name: >
         ipa-server-install
         --realm {{ server.realm }}
