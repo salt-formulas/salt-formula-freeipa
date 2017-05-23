@@ -30,7 +30,7 @@ freeipa_zones_dir:
 {%- for name, zone in server.get('dns', {}).get('zone', {}).iteritems() %}
 {%- if zone.get('enabled', True) %}
 freeipa_dnszone_{{ name }}:
-  cmd.run:
+  cmd.shell:
     - name: >
         echo {{ server.admin.password }} | kinit admin &&
         ipa dnszone-add "{{ name }}"
@@ -55,7 +55,7 @@ freeipa_dnszone_{{ name }}:
 
 {%- if zone.transfer is defined %}
 freeipa_dnszone_{{ name }}_transfer:
-  cmd.run:
+  cmd.shell:
     - name: |
           ldapmodify -h localhost -D 'cn=directory manager' -w {{ server.ldap.password }} -Z << EOF
           dn: idnsname={{ name }}.,cn=dns,dc={{ server.domain|replace('.', ',dc=') }}
