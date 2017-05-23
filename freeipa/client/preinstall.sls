@@ -6,8 +6,8 @@ push_principal:
     - name: /tmp/principal.keytab
     - source: {{ client.get("install_principal", {}).get("source", "salt://freeipa/files/principal.keytab") }}
     - mode: {{ client.get("install_principal", {}).get("mode", 0600) }}
-    - user: {{ client.get("install_principal", {}).get("user", "root") }}
-    - group: {{ client.get("install_principal", {}).get("group", "root") }}
+    - user: {{ client.get("install_principal", {}).get("file_user", "root") }}
+    - group: {{ client.get("install_principal", {}).get("file_group", "root") }}
 get_ticket:
   cmd.run:
     - name: kinit {{ client.get("install_principal", {}).get("principal_user", "root") }}@{{ client.get("realm", "") }} -kt /tmp/salt-service.keytab
