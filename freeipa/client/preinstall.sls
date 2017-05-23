@@ -44,6 +44,8 @@ ipa_host_add:
         }' https://{{ client.get("server", {}) }}/ipa/json
     - require:
       - cmd: get_ticket
+    - prereq:
+      - cmd: freeipa_client_install
 cleanup_cookiejar:
   file.absent:
     - name: /tmp/cookiejar
