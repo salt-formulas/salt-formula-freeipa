@@ -16,7 +16,7 @@ freeipa_client_pkgs:
     - names: {{ client.pkgs }}
 
 freeipa_client_install:
-  cmd.shell:
+  cmd.run:
     - name: >
         ipa-client-install
         --server {{ client.server }}
