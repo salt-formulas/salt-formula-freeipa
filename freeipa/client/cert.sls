@@ -47,7 +47,7 @@ freeipa_cert_{{ principal }}_dirs:
     - makedirs: true
 
 freeipa_cert_{{ principal }}:
-  cmd.shell:
+  cmd.run:
     - name: >
         ipa-getcert request -r
         -f {{ cert_file }}
