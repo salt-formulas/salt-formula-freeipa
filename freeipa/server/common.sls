@@ -23,7 +23,7 @@ freeipa_server_pkgs:
     {%- endif %}
 
 ldap_secure_binds:
-  cmd.shell:
+  cmd.run:
     - name: |
           ldapmodify -h localhost -D 'cn=directory manager' -w {{ server.ldap.password }} -Z << EOF
           dn: cn=config
@@ -38,7 +38,7 @@ ldap_secure_binds:
 
 {%- if server.ldap.get('logging', {}).audit is defined %}
 ldap_logs_audit:
-  cmd.shell:
+  cmd.run:
     - name: |
           ldapmodify -h localhost -D 'cn=directory manager' -w {{ server.ldap.password }} -Z << EOF
           dn: cn=config
@@ -54,7 +54,7 @@ ldap_logs_audit:
 
 {%- if server.ldap.get('logging', {}).access is defined %}
 ldap_logs_access:
-  cmd.shell:
+  cmd.run:
     - name: |
           ldapmodify -h localhost -D 'cn=directory manager' -w {{ server.ldap.password }} -Z << EOF
           dn: cn=config
