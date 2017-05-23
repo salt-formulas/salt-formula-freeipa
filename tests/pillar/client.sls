@@ -9,6 +9,11 @@ freeipa:
     domain: local
     realm: LOCAL
     otp: password
+    install_principal:
+      source: salt://freeipa/files/principal.keytab
+      mode: 0600
+      user: "root"
+      group: "root
     keytab:
       /etc/apache2/ipa.keytab:
         mode: 0640
