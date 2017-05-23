@@ -9,13 +9,8 @@ push_principal:
     - user: {{ client.get("install_principal", {}).get("user", "root") }}
     - group: {{ client.get("install_principal", {}).get("group", "root") }}
 get_ticket:
-<<<<<<< HEAD
-  cmd.shell:
-    - name: kinit {{ client.get("install_principal", {}).get("user", "root") }}@{{ client.get("realm", "") }} -kt /tmp/principal.keytab
-=======
   cmd.run:
-    - name: kinit {{ client.get("install_principal", {}).get("user", "root") }}@{{ client.get("realm", "") }} -kt /tmp/salt-service.keytab:
->>>>>>> parent of 1cc9b47... Switching run->shell per warning
+    - name: kinit {{ client.get("install_principal", {}).get("principal_user", "root") }}@{{ client.get("realm", "") }} -kt /tmp/salt-service.keytab
     - require: 
       - file: push_principal
 ipa_host_add:
