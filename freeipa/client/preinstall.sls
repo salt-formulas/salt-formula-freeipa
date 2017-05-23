@@ -1,4 +1,5 @@
-{% set otp = ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.ascii_lowercase + string.digits) for _ in range(16)) %}
+{%- from "freeipa/map.jinja" import client, server, ipa_host with context %}
+{% set otp = salt['random.get_str'](20) %}
 
 push_principal:
   file.managed:
