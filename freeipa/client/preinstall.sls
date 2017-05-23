@@ -10,7 +10,7 @@ push_principal:
     - group: {{ client.get("install_principal", {}).get("group", "root") }}
 get_ticket:
   cmd.shell:
-    - name: kinit {{ client.get("install_principal", {}).get("user", "root") }}@{{ client.get("realm", "") }} -kt /tmp/salt-service.keytab:
+    - name: kinit {{ client.get("install_principal", {}).get("user", "root") }}@{{ client.get("realm", "") }} -kt /tmp/principal.keytab
     - require: 
       - file: push_principal
 ipa_host_add:
@@ -50,3 +50,6 @@ cleanup_cookiejar:
 cleanup_keytab:
   file.absent:
     - name: /tmp/principal.keytab
+kdestroy:
+  cmd.shell:
+    - name: kdestroy
