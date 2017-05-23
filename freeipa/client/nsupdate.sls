@@ -7,8 +7,8 @@ include:
   - freeipa.client
   {%- endif %}
 
-{%- set default_ipv4 = salt['cmd.run']("echo -n $(ip r get 8.8.8.8|grep -v -e 'dev lo'|head -1|awk '{print $NF}')") %}
-{%- set default_ipv6 = salt['cmd.run']("echo -n $(ip r get 2a00:1450:400d:802::200e|grep -v -e 'dev lo'|head -1|awk '{print $NF}')") %}
+{%- set default_ipv4 = salt['cmd.shell']("echo -n $(ip r get 8.8.8.8|grep -v -e 'dev lo'|head -1|awk '{print $NF}')") %}
+{%- set default_ipv6 = salt['cmd.shell']("echo -n $(ip r get 2a00:1450:400d:802::200e|grep -v -e 'dev lo'|head -1|awk '{print $NF}')") %}
 
 {%- for host in client.get("nsupdate", {}) %}
 
