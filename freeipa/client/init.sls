@@ -24,7 +24,7 @@ get_ticket:
 ipa_host_add:
   cmd.run:
     - name: >
-        curl -k
+        curl -k -s
         -H referer:https://{{ client.get("server", {}) }}/ipa
         --negotiate -u :
         -H "Content-Type:application/json"
@@ -61,7 +61,7 @@ cleanup_keytab:
   file.absent:
     - name: /tmp/principal.keytab
 kdestroy:
-  cmd.shell:
+  cmd.run:
     - name: kdestroy
 {%- endif %}
 
