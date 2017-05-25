@@ -16,10 +16,14 @@ push_principal:
     - mode: {{ client.get("install_principal", {}).get("mode", 0600) }}
     - user: {{ client.get("install_principal", {}).get("file_user", "root") }}
     - group: {{ client.get("install_principal", {}).get("file_group", "root") }}
+    - unless:
+      - ipa-client-install 2>&1 | grep "IPA client is already configured on this system"
 get_ticket:
   cmd.run:
     - name: kinit {{ client.get("install_principal", {}).get("principal_user", "root") }}@{{ client.get("realm", "") }} -kt /tmp/salt-service.keytab
     - require: 
+      - file: push_principal
+    - onchanges:
       - file: push_principal
 ipa_host_add:
   cmd.run:
@@ -54,15 +58,23 @@ ipa_host_add:
       - cmd: get_ticket
     - prereq:
       - cmd: freeipa_client_install
+    - onchanges:
+      - file: push_principal
 cleanup_cookiejar:
   file.absent:
     - name: /tmp/cookiejar
+    - onchanges:
+      - file: push_principal
 cleanup_keytab:
   file.absent:
     - name: /tmp/principal.keytab
+    - onchanges:
+      - file: push_principal
 kdestroy:
   cmd.run:
     - name: kdestroy
+    - onchanges:
+      - file: push_principal
 {%- endif %}
 
 {%- if client.get('enabled', False) %}
@@ -94,6 +106,10 @@ freeipa_client_install:
       - service: sssd_service
       - file: ldap_conf
       - file: krb5_conf
+    {%- if pillar.freeipa.client.install_principal is defined %}
+    - onchanges:
+      - file: push_principal
+    {%- endif %}
 
 krb5_conf:
   file.managed:
