@@ -21,13 +21,13 @@ Client
         realm: {{ salt['grains.get']('domain', '').upper() }}
         hostname: {{ salt['grains.get']('fqdn', '') }}
 
-To automatically register the client with FreeIPA, you will need to first create a Kerberos principal. Start by creating a service account in FreeIPA. You may wish to restrict that users permissions to only host creation (see https://www.freeipa.org/page/HowTos#Working_with_FreeIPA). Next, you will need to obtain a kerberos ticket as admin on the IPA server, then generate a service account principl.
+To automatically register the client with FreeIPA, you will need to first create a Kerberos principal. Start by creating a service account in FreeIPA. You may wish to restrict that users permissions to only host creation (see https://www.freeipa.org/page/HowTos#Working_with_FreeIPA). Next, you will need to obtain a kerberos ticket as admin on the IPA server, then generate a service account principal.
 
-```bash
-kinit admin
-ipa-getkeytab -p service-account@EXAMPLE.com -k ./principal.keytab -s freeipahost.example.com
-scp ./principal.keytab user@saltmaster.example.com:/srv/salt/freeipa/files/principal.keytab
-```
+``kinit admin``
+
+``ipa-getkeytab -p service-account@EXAMPLE.com -k ./principal.keytab -s freeipahost.example.com``
+
+``scp ./principal.keytab user@saltmaster.example.com:/srv/salt/freeipa/files/principal.keytab``
 
 Then add to your pillar:
 
