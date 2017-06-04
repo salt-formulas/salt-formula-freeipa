@@ -1,9 +1,10 @@
 
 ==================================
-freeipa
+FreeIPA
 ==================================
 
-FreeIPA Identity Management service and client
+This forumla installs and configured the FreeIPA Identity Management service 
+and client.
 
 Sample pillars
 ==============
@@ -21,7 +22,11 @@ Client
         realm: {{ salt['grains.get']('domain', '').upper() }}
         hostname: {{ salt['grains.get']('fqdn', '') }}
 
-To automatically register the client with FreeIPA, you will need to first create a Kerberos principal. Start by creating a service account in FreeIPA. You may wish to restrict that users permissions to only host creation (see https://www.freeipa.org/page/HowTos#Working_with_FreeIPA). Next, you will need to obtain a kerberos ticket as admin on the IPA server, then generate a service account principal.
+To automatically register the client with FreeIPA, you will first need to 
+create a Kerberos principal. Start by creating a service account in FreeIPA. 
+You may wish to restrict that users permissions to only host creation (see https://www.freeipa.org/page/HowTos#Working_with_FreeIPA). Next, you will 
+need to obtain a kerberos ticket as admin on the IPA server, then generate
+a service account principal.
 
 ``kinit admin``
 
@@ -46,9 +51,16 @@ Then add to your pillar:
           file_user: "root"
           file_group: "root"
 
-This will allow your client to use FreeIPA's JSON interface to create a host entry with a One Time Password and then register to the FreeIPA server. For security purposes, the kerberos principl will only be pushed down to the client if the installer reports it is not registered to the FreeIPA server and will be removed from the client as soon as the endpoint has registered with the FreeIPA server.
+This will allow your client to use FreeIPA's JSON interface to create a host 
+entry with a One Time Password and then register to the FreeIPA server. For 
+security purposes, the kerberos principal will only be pushed down to the client 
+if the installer reports it is not registered to the FreeIPA server and will be 
+removed from the client as soon as the endpoint has registered with the FreeIPA 
+server.
 
-Additionally, the openssh formula (see https://github.com/salt-formulas/salt-formula-openssh) is needed and is a dependancy for this formula. Configure it thusly:
+Additionally, the openssh formula (see 
+https://github.com/salt-formulas/salt-formula-openssh) is needed and is a 
+dependency for this formula. Configure it thusly:
 
 .. code-block:: yaml
 
@@ -104,7 +116,8 @@ Server
         ldap:
           password: secretpassword
 
-Server definition for new verion of freeipa (4.3+). Replicas dont require generation of gpg file on master. But principal user has to be defined with
+Server definition for new verion of freeipa (4.3+). Replicas dont require 
+generation of gpg file on master. But principal user has to be defined with
 
 .. code-block:: yaml
 
