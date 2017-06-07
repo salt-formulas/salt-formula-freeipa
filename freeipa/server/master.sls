@@ -26,7 +26,7 @@ freeipa_server_install:
     - require:
       - pkg: freeipa_server_pkgs
     - require_in:
-      - service: sssd_service
+      #- service: sssd_service
       - file: ldap_conf
 
 {%- endif %}

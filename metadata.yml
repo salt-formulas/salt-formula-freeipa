@@ -1,6 +1,6 @@
 name: "freeipa"
 version: "0.1"
-source: "https://github.com/tcpcloud/salt-formula-freeipa"
+source: "https://github.com/salt-formulas/salt-formula-freeipa"
 dependencies:
-  - name: openssh
-    source: "https://github.com/tcpcloud/salt-formula-openssh"
+- name: openssh
+  source: "https://github.com/salt-formulas/salt-formula-openssh"

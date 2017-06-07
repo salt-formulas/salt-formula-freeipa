@@ -5,6 +5,7 @@
 named_service:
   service.running:
     - name: {{ server.named_service }}
+    - enable: True
     - watch:
       - file: named_config
 
@@ -14,7 +15,7 @@ named_config:
     - source: salt://freeipa/files/named.conf
     - template: jinja
     - owner: root
-    - group: named
+    - group: {{ server.named_user }}
     - mode: 640
     - require:
       - cmd: freeipa_server_install

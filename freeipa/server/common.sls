@@ -31,6 +31,7 @@ ldap_secure_binds:
           replace: nsslapd-minssf
           nsslapd-minssf: {{ server.ldap.minssf }}
           EOF
+    - onlyif: "ldapwhoami -h localhost -D 'cn=directory manager' -w {{ server.ldap.password }} -b 'cn=config' -Z"
     - unless: "ldapsearch -h localhost -D 'cn=directory manager' -w {{ server.ldap.password }} -b 'cn=config' -Z | grep 'nsslapd-minssf: {{ server.ldap.minssf }}'"
     - require:
       - cmd: freeipa_server_install
@@ -46,6 +47,7 @@ ldap_logs_audit:
           replace: nsslapd-auditlog-logging-enabled
           nsslapd-auditlog-logging-enabled: {% if server.ldap.logging.audit %}on{% else %}off{% endif %}
           EOF
+    - onlyif: "ldapwhoami -h localhost -D 'cn=directory manager' -w {{ server.ldap.password }} -b 'cn=config' -Z"
     - unless: "ldapsearch -h localhost -D 'cn=directory manager' -w {{ server.ldap.password }} -b 'cn=config' -Z | grep 'nsslapd-auditlog-logging-enabled: {% if server.ldap.logging.audit %}on{% else %}off{% endif %}'"
     - require:
       - cmd: freeipa_server_install
@@ -62,6 +64,7 @@ ldap_logs_access:
           replace: nsslapd-accesslog-logging-enabled
           nsslapd-accesslog-logging-enabled: {% if server.ldap.logging.access %}on{% else %}off{% endif %}
           EOF
+    - onlyif: "ldapwhoami -h localhost -D 'cn=directory manager' -w {{ server.ldap.password }} -b 'cn=config' -Z"
     - unless: "ldapsearch -h localhost -D 'cn=directory manager' -w {{ server.ldap.password }} -b 'cn=config' -Z | grep 'nsslapd-accesslog-logging-enabled: {% if server.ldap.logging.access %}on{% else %}off{% endif %}'"
     - require:
       - cmd: freeipa_server_install
@@ -78,6 +81,7 @@ ldap_disable_anonymous:
           replace: nsslapd-allow-anonymous-access
           nsslapd-allow-anonymous-access: off
           EOF
+    - onlyif: "ldapwhoami -h localhost -D 'cn=directory manager' -w {{ server.ldap.password }} -b 'cn=config' -Z"
     - unless: "ldapsearch -h localhost -D 'cn=directory manager' -w {{ server.ldap.password }} -b 'cn=config' -Z | grep 'nsslapd-allow-anonymous-access: off'"
     - require:
       - cmd: freeipa_server_install

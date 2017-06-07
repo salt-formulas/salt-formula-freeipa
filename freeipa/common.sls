@@ -3,8 +3,10 @@
 include:
 - openssh.server
 
+{%- if client.get('enabled', False) %}
 sssd_service:
-  service.running:
+  service.enabled:
+    - enable: True
     - name: sssd
     - watch_in:
       - service: openssh_server_service
@@ -20,6 +22,7 @@ sssd_conf:
     - mode: 600
     - source: salt://freeipa/files/sssd.conf
     - makedirs: True
+{% endif %}
 
 ldap_conf:
   file.managed:
@@ -40,6 +43,7 @@ nss_packages_absent:
       - file: ldap_conf_nss
 {%- endif %}
 
+{%- if client.get('enabled', False) %}
 {%- if client.get('mkhomedir', True) and server.get('mkhomedir', True) %}
 {%- if grains.os_family == 'Debian' %}
 # This should be shipped by package and setup with --mkhomedir above, but
@@ -66,6 +70,7 @@ pam_auth_update:
     - name: /usr/local/bin/pam-enable-mkhomedir
     - watch:
       - file: pam_mkhomedir_config
+{%- endif %}
 {%- endif %}
 {%- endif %}
 

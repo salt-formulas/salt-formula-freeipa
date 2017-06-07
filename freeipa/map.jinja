@@ -31,6 +31,7 @@ Debian:
   pkgs:
   - freeipa-server
   named_service: bind9
+  named_user: bind
   ldap_conf: /etc/openldap/ldap.conf
   sssd_conf: /etc/sssd/sssd.conf
   named_conf: /etc/bind/named.conf
@@ -42,8 +43,10 @@ RedHat:
   {% else %}
   - ipa-server
   - ipa-server-dns
+  - ipa-server-trust-ad
   {% endif %}
   named_service: named-pkcs11
+  named_user: named
   ldap_conf: /etc/openldap/ldap.conf
   sssd_conf: /etc/sssd/sssd.conf
   named_conf: /etc/named.conf

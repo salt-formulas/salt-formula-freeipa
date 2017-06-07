@@ -1,13 +1,13 @@
 freeipa:
   client:
     enabled: true
-    hostname: client01.local
-    server: idm01.local
+    hostname: freeipa.ci.kitchenci
+    server: freeipa.ci.kitchenci
     servers:
-      - idm01.local
-      - idm02.local
-    domain: local
-    realm: LOCAL
+      - freeipa.ci.kitchenci
+      - freeipa2.ci.kitchenci
+    domain: kitchenci
+    realm: KITCHENCI
     otp: password
     keytab:
       /etc/apache2/ipa.keytab:
@@ -16,27 +16,27 @@ freeipa:
         group: www-data
         identities:
           - service: HTTP
-            host: test.example.com
+            host: test.ci.kitchenci
           - service: host
-            host: anothertest.example.com
+            host: anothertest.ci.kitchenci
     nsupdate:
-      - name: test.example.com
+      - name: test.ci.kitchenci
         ipv4:
           - 8.8.8.8
         ipv6:
           - 2a00:1450:4001:80a::1009
         ttl: 1800
         keytab: /etc/krb5.keytab
-      - name: anothertest.example.com
+      - name: anothertest.ci.kitchenci
         ipv4:
           - 8.8.8.8
     cert:
-      "HTTP/www.example.com":
+      "HTTP/www.ci.kitchenci":
         user: root
         group: www-data
         mode: 640
-        cert: /etc/ssl/certs/http-www.example.com.crt
-        key: /etc/ssl/private/http-www.example.com.key
+        cert: /etc/ssl/certs/http-www.ci.kitchenci.crt
+        key: /etc/ssl/private/http-www.ci.kitchenci.key
 openssh:
   server:
     enabled: true
