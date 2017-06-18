@@ -53,7 +53,7 @@ freeipa_host_add:
               "version": "2.156"
             }
           ]
-        }' https://{{ client.get("server", {}) }}/ipa/json
+        }' https://{{ ipa_servers[0] }}/ipa/json
     - require:
       - cmd: freeipa_get_ticket
     - require_in:
