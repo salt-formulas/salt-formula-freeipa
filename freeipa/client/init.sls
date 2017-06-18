@@ -1,4 +1,4 @@
-{%- from "freeipa/map.jinja" import client, ipa_host with context %}
+{%- from "freeipa/map.jinja" import client, ipa_host, ipa_servers with context %}
 
 include:
 - freeipa.common
@@ -6,10 +6,10 @@ include:
 - freeipa.client.nsupdate
 - freeipa.client.cert
 
-{%- if pillar.freeipa.client.install_principal is defined %}
+{%- if client.install_principal is defined %}
 {% set otp = salt['random.get_str'](20) %}
 
-push_principal:
+freeipa_push_principal:
   file.managed:
     - name: /tmp/principal.keytab
     - source: {{ client.get("install_principal", {}).get("source", "salt://freeipa/files/principal.keytab") }}
@@ -17,19 +17,19 @@ push_principal:
     - user: {{ client.get("install_principal", {}).get("file_user", "root") }}
     - group: {{ client.get("install_principal", {}).get("file_group", "root") }}
     - unless:
-      - ipa-client-install 2>&1 | grep "IPA client is already configured on this system"
-get_ticket:
+      - ipa-client-install --unattended 2>&1 | grep "IPA client is already configured on this system"
+freeipa_get_ticket:
   cmd.run:
-    - name: kinit {{ client.get("install_principal", {}).get("principal_user", "root") }}@{{ client.get("realm", "") }} -kt /tmp/salt-service.keytab
-    - require: 
-      - file: push_principal
+    - name: kinit {{ client.get("install_principal", {}).get("principal_user", "root") }}@{{ client.get("realm", "") }} -kt /tmp/principal.keytab
+    - require:
+      - file: freeipa_push_principal
     - onchanges:
-      - file: push_principal
-ipa_host_add:
+      - file: freeipa_push_principal
+freeipa_host_add:
   cmd.run:
     - name: >
         curl -k -s
-        -H referer:https://{{ client.get("server", {}) }}/ipa
+        -H referer:https://{{ ipa_servers[0] }}/ipa
         --negotiate -u :
         -H "Content-Type:application/json"
         -H "Accept:applicaton/json"
@@ -38,7 +38,7 @@ ipa_host_add:
         -d '{
           "id": 0,
           "method": "host_add",
-          "params": [
+                    "params": [
             [
               "{{ client.get("hostname", {})  }}"
             ],
@@ -55,26 +55,11 @@ ipa_host_add:
           ]
         }' https://{{ client.get("server", {}) }}/ipa/json
     - require:
-      - cmd: get_ticket
-    - prereq:
+      - cmd: freeipa_get_ticket
+    - require_in:
       - cmd: freeipa_client_install
     - onchanges:
-      - file: push_principal
-cleanup_cookiejar:
-  file.absent:
-    - name: /tmp/cookiejar
-    - onchanges:
-      - file: push_principal
-cleanup_keytab:
-  file.absent:
-    - name: /tmp/principal.keytab
-    - onchanges:
-      - file: push_principal
-kdestroy:
-  cmd.run:
-    - name: kdestroy
-    - onchanges:
-      - file: push_principal
+      - file: freeipa_push_principal
 {%- endif %}
 
 {%- if client.get('enabled', False) %}
@@ -82,6 +67,33 @@ kdestroy:
 freeipa_client_pkgs:
   pkg.installed:
     - names: {{ client.pkgs }}
+freeipa_cleanup_cookiejar:
+  file.absent:
+    - name: /tmp/cookiejar
+    - require:
+      - cmd: freeipa_host_add
+    - require_in:
+      -cmd: freeipa_client_install
+    - onchanges:
+      - cmd: freeipa_host_add
+freeipa_cleanup_keytab:
+  file.absent:
+    - name: /tmp/principal.keytab
+    - require:
+      - cmd: freeipa_host_add
+    - require_in:
+      -cmd: freeipa_client_install
+    - onchanges:
+      - cmd: freeipa_host_add
+freeipa_kdestroy:
+  cmd.run:
+    - name: kdestroy
+    - require:
+      - cmd: freeipa_host_add
+    - require_in:
+      -cmd: freeipa_client_install
+    - onchanges:
+      - file: freeipa_push_principal
 
 freeipa_client_install:
   cmd.run:
@@ -106,9 +118,9 @@ freeipa_client_install:
       - service: sssd_service
       - file: ldap_conf
       - file: krb5_conf
-    {%- if pillar.freeipa.client.install_principal is defined %}
+    {%- if client.install_principal is defined %}
     - onchanges:
-      - file: push_principal
+      - file: freeipa_push_principal
     {%- endif %}
 
 krb5_conf:
