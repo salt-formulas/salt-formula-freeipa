@@ -7,7 +7,7 @@ include:
 - freeipa.client.cert
 
 {%- if client.install_principal is defined %}
-{% set otp = salt['random.get_str'](20) %}
+{%- set otp = salt['random.get_str'](20) %}
 
 freeipa_push_principal:
   file.managed:
@@ -60,13 +60,7 @@ freeipa_host_add:
       - cmd: freeipa_client_install
     - onchanges:
       - file: freeipa_push_principal
-{%- endif %}
 
-{%- if client.get('enabled', False) %}
-
-freeipa_client_pkgs:
-  pkg.installed:
-    - names: {{ client.pkgs }}
 freeipa_cleanup_cookiejar:
   file.absent:
     - name: /tmp/cookiejar
@@ -94,6 +88,13 @@ freeipa_kdestroy:
       -cmd: freeipa_client_install
     - onchanges:
       - file: freeipa_push_principal
+{%- endif %}
+
+{%- if client.get('enabled', False) %}
+
+freeipa_client_pkgs:
+  pkg.installed:
+    - names: {{ client.pkgs }}
 
 freeipa_client_install:
   cmd.run:
