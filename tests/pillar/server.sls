@@ -1,11 +1,11 @@
 freeipa:
   server:
     enabled: true
-    realm: LOCAL
-    domain: local
+    realm: KITCHENCI
+    domain: kitchenci
     servers:
-      - idm01.local
-      - idm02.local
+      - freeipa.ci.kitchenci
+      - freeipa2.ci.kitchenci
     admin:
       password: password
     ldap:

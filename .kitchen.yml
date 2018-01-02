@@ -1,0 +1,137 @@
+---
+driver:
+  name: docker
+  hostname: freeipa.ci.kitchenci
+  use_sudo: false
+  #cap_add:
+  #- SYS_ADMIN
+  #volume:
+  #- /sys/fs/cgroup
+  privileged: true
+
+provisioner:
+  name: salt_solo
+  salt_install: bootstrap
+  salt_bootstrap_url: https://bootstrap.saltstack.com
+  salt_version: latest
+  require_chef: false
+  dependencies:
+    - name: openssh
+      repo: git
+      source: https://github.com/salt-formulas/salt-formula-openssh
+  log_level: error
+  formula: freeipa
+  grains:
+    noservices: True
+  state_top:
+    base:
+      "*":
+        - freeipa
+  pillars:
+    top.sls:
+      base:
+        "*":
+          - server
+          - client
+          - openssh_server
+    server.sls: {}
+    client.sls: {}
+  pillars-from-files:
+    openssh_server.sls: tests/pillar/openssh_server.sls
+  init_environment: |
+    echo "10.0.2.15  freeipa2.ci.kitchenci | sudo tee -a /etc/hosts"
+    sudo yum install -y git
+
+
+verifier:
+  name: inspec
+  sudo: true
+
+
+platforms:
+  #- name: <%=ENV['PLATFORM'] || 'ubuntu-xenial'%>
+  #  driver_config:
+  #    image: <%=ENV['PLATFORM'] || 'trevorj/salty-whales:xenial'%>
+  #    platform: ubuntu
+  #    run_command: /sbin/init
+  #    pid_one_command: /lib/systemd/systemd
+  #    provision_command:
+  #    #- sed -i 's/UsePAM yes/UsePAM no/g' /etc/ssh/sshd_config
+  #    - systemctl enable systemd-networkd
+  #    - systemctl enable ssh.service
+
+  #- name: <%=ENV['PLATFORM'] || 'ubuntu-16.04'%>
+  #  driver_config:
+  #    platform: ubuntu
+  #    # run_command: /sbin/init
+  #    run_command: /sbin/init
+  #    pid_one_command: /lib/systemd/systemd
+  #    privileged: true
+  #    provision_command:
+  #    - sed -i 's/UsePAM yes/UsePAM no/g' /etc/ssh/sshd_config
+  #    - systemctl enable systemd-networkd
+  #    - systemctl enable ssh.service
+
+   # ipa-server-install: error: no such option: --mkhomedir
+   #- name: <%=ENV['PLATFORM'] || 'centos-6'%>
+
+   - name: <%=ENV['PLATFORM'] || 'centos-7'%>
+     driver_config:
+       run_command: /usr/lib/systemd/systemd
+
+  ## Start tests with plane salty-whales:xenial, but freeipa has an issue to start some systemd services.
+  ## Attempt to use systemd didn't succed
+  #- name: <%=ENV['PLATFORM'] || 'ubuntu-16.04'%>
+  ##- name: <%=ENV['PLATFORM'] || 'ubuntu-xenial'%>
+  #  driver_config:
+  #    # image: <%=ENV['PLATFORM'] || 'trevorj/salty-whales:xenial'%>
+  #    platform: ubuntu
+  #    run_command: /sbin/init
+  #    pid_one_command: /lib/systemd/systemd
+  #    privileged: true
+  #    provision_command:
+  #    - sed -i 's/UsePAM yes/UsePAM no/g' /etc/ssh/sshd_config
+  #    #- systemctl enable systemd-networkd
+  #    - systemctl enable ssh.service
+
+   # Centos7 default has fake systemd, and isn't good for kitchen testing.
+   # Errors with:     Cannot find a valid baseurl for repo: base/7/x86_64
+   #- name: <%=ENV['PLATFORM'] || 'centos-7'%>
+    # driver_config:
+      # image: centos/systemd
+      # image: corux/centos7-salt
+      # run_command: /usr/sbin/init
+      # privileged: true
+      # provision_command:
+      # - echo "nameserver 8.8.8.8 | sudo tee -a /etc/resolv.conf"
+        #- sed -i 's/UsePAM yes/UsePAM no/g' /etc/ssh/sshd_config
+        #- systemctl enable sshd.service
+      # run_command: /sbin/init
+      # run_command: /lib/systemd/systemd
+      # privileged: true
+
+suites:
+
+  - name: server
+    provisioner:
+      pillars-from-files:
+        server.sls: tests/pillar/server.sls
+
+  - name: client
+    provisioner:
+      pillars-from-files:
+        client.sls: tests/pillar/client.sls
+
+  - name: replica
+    provisioner:
+      pillars-from-files:
+        server.sls: tests/pillar/server.sls
+        client.sls: tests/pillar/client.sls
+      state_top:
+        base:
+          "*":
+            - freeipa.server
+            - freeipa.client
+            - freeipa.server.replica_install
+
+# vim: ft=yaml sw=2 ts=2 sts=2 tw=125
