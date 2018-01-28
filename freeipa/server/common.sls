@@ -29,9 +29,9 @@ ldap_secure_binds:
           dn: cn=config
           changetype: modify
           replace: nsslapd-minssf
-          nsslapd-minssf: {{ server.ldap.minssf }}
+          nsslapd-minssf: {{ salt['pillar.get']('server:ldap:minssf', 0) }}
           EOF
-    - unless: "ldapsearch -h localhost -D 'cn=directory manager' -w {{ server.ldap.password }} -b 'cn=config' -Z | grep 'nsslapd-minssf: {{ server.ldap.minssf }}'"
+    - unless: "ldapsearch -h localhost -D 'cn=directory manager' -w {{ server.ldap.password }} -b 'cn=config' -Z | grep 'nsslapd-minssf: {{ salt['pillar.get']('server:ldap:minssf', 0) }}'"
     - require:
       - cmd: freeipa_server_install
       - file: ldap_conf
@@ -68,7 +68,7 @@ ldap_logs_access:
       - file: ldap_conf
 {%- endif %}
 
-{%- if not server.ldap.anonymous %}
+{%- if server.ldap.anonymous is not defined %}
 ldap_disable_anonymous:
   cmd.run:
     - name: |
