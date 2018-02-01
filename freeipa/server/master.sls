@@ -21,6 +21,7 @@ freeipa_server_install:
         {%- if server.get('mkhomedir', True) %} --mkhomedir{%- endif %}
         --auto-reverse
         --no-host-dns
+        --allow-zone-overlap
         --unattended
     - creates: /etc/ipa/default.conf
     - require:
