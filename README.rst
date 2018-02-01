@@ -111,8 +111,6 @@ Server
       server:
         realm: IPA.EXAMPLE.COM
         domain: ipa.example.com
-        admin:
-          password: secretpassword
         ldap:
           password: secretpassword
 
