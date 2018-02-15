@@ -27,6 +27,7 @@ KITCHEN_OPTS_TEST?=""
 
 all:
 	@echo "make install - Install into DESTDIR"
+	@echo "make lint    - Run lint tests"
 	@echo "make test    - Run tests"
 	@echo "make kitchen - Run Kitchen CI tests (create, converge, verify)"
 	@echo "make clean   - Cleanup after tests run"
@@ -44,6 +45,9 @@ install:
 	# Metadata
 	[ -d $(DESTDIR)/$(RECLASSDIR)/service/$(FORMULANAME) ] || mkdir -p $(DESTDIR)/$(RECLASSDIR)/service/$(FORMULANAME)
 	cp -a metadata/service/* $(DESTDIR)/$(RECLASSDIR)/service/$(FORMULANAME)
+
+lint:
+	[ ! -d tests ] || (cd tests; ./run_tests.sh lint)
 
 test:
 	[ ! -d tests ] || (cd tests; ./run_tests.sh)
@@ -65,7 +69,7 @@ release-minor: check-changes
 	[ ! -f debian/changelog ] || dch -v $(VERSION_MAJOR).$(NEW_MINOR_VERSION) -m --force-distribution -D `dpkg-parsechangelog -S Distribution` "New version"
 	make genchangelog-$(VERSION_MAJOR).$(NEW_MINOR_VERSION)
 	(git add -u; git commit -m "Version $(VERSION_MAJOR).$(NEW_MINOR_VERSION)")
-	git tag -s -m $(NEW_MAJOR_VERSION) $(VERSION_MAJOR).$(NEW_MINOR_VERSION)
+	git tag -s -m $(VERSION_MAJOR).$(NEW_MINOR_VERSION) $(VERSION_MAJOR).$(NEW_MINOR_VERSION)
 
 check-changes:
 	@git log --pretty=oneline --decorate $(VERSION)..HEAD | grep -Eqc '.*' || (echo "No new changes since version $(VERSION)"; exit 1)
