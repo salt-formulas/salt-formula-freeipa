@@ -37,6 +37,7 @@ a service account principal.
 Then add to your pillar:
 
 .. code-block:: yaml
+
     freeipa:
       client:
         enabled: true
