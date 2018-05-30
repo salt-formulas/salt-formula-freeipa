@@ -29,7 +29,7 @@ ldap_secure_binds:
           dn: cn=config
           changetype: modify
           replace: nsslapd-minssf
-          nsslapd-minssf: {{ server.ldap.minssf }}
+          nsslapd-minssf: {{ server.ldap.get('minssf', 0) }}
           EOF
     - env:
       - FREEIPA_LDAP_PASSWORD: {{ server.ldap.password }}
@@ -74,7 +74,7 @@ ldap_logs_access:
       - file: ldap_conf
 {%- endif %}
 
-{%- if not server.ldap.anonymous %}
+{%- if not server.ldap.get('anonymous') %}
 ldap_disable_anonymous:
   cmd.run:
     - name: |

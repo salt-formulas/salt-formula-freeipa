@@ -23,10 +23,11 @@ freeipa_server_install:
         {%- if server.get('mkhomedir', True) %} --mkhomedir{%- endif %}
         --auto-reverse
         --no-host-dns
+        --allow-zone-overlap
         --unattended
     - env:
       - FREEIPA_LDAP_PASSWORD: {{ server.ldap.password }}
-      - FREEIPA_ADMIN_PASSWORD: {{ server.admin.password }}
+      - FREEIPA_ADMIN_PASSWORD: {{ server.admin.get('password', server.ldap.password) }}
     - creates: /etc/ipa/default.conf
     - require:
       - pkg: freeipa_server_pkgs
