@@ -9,7 +9,7 @@ include:
 
 freeipa_server_pkgs:
   pkg.installed:
-    - names: {{ server.pkgs }}
+    - names: {{ server.pkgs|tojson }}
 
 /etc/dirsrv/password:
   file.managed:
