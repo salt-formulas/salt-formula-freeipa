@@ -1,13 +1,18 @@
 {%- from "freeipa/map.jinja" import client,server with context %}
+{%- set openssh_server_enabled = salt.pillar.get('openssh:server:enabled', False) %}
 
+{%- if openssh_server_enabled %}
 include:
 - openssh.server
+{%- endif %}
 
 sssd_service:
   service.running:
     - name: sssd
+    {%- if openssh_server_enabled %}
     - watch_in:
       - service: openssh_server_service
+    {%- endif %}
     - watch:
       - file: sssd_conf
 
@@ -68,4 +73,3 @@ pam_auth_update:
       - file: pam_mkhomedir_config
 {%- endif %}
 {%- endif %}
-

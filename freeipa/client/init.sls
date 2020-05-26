@@ -67,7 +67,7 @@ freeipa_cleanup_cookiejar:
     - require:
       - cmd: freeipa_host_add
     - require_in:
-      -cmd: freeipa_client_install
+      - cmd: freeipa_client_install
     - onchanges:
       - cmd: freeipa_host_add
 freeipa_cleanup_keytab:
@@ -76,7 +76,7 @@ freeipa_cleanup_keytab:
     - require:
       - cmd: freeipa_host_add
     - require_in:
-      -cmd: freeipa_client_install
+      - cmd: freeipa_client_install
     - onchanges:
       - cmd: freeipa_host_add
 freeipa_kdestroy:
@@ -85,7 +85,7 @@ freeipa_kdestroy:
     - require:
       - cmd: freeipa_host_add
     - require_in:
-      -cmd: freeipa_client_install
+      - cmd: freeipa_client_install
     - onchanges:
       - file: freeipa_push_principal
 {%- endif %}

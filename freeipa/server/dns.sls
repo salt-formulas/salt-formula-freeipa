@@ -13,7 +13,7 @@ named_config:
     - name: {{ server.named_conf }}
     - source: salt://freeipa/files/named.conf
     - template: jinja
-    - owner: root
+    - user: root
     - group: named
     - mode: 640
     - require:
@@ -32,7 +32,7 @@ freeipa_zones_dir:
 freeipa_dnszone_{{ name }}:
   cmd.run:
     - name: >
-        echo {{ server.admin.password }} | kinit admin &&
+        echo "$FREEIPA_ADMIN_PASSWORD" | kinit admin &&
         ipa dnszone-add "{{ name }}"
         {%- if zone.admin is defined %} --admin-email={{ zone.admin|replace('@', '.') }}.{%- endif %}
         {%- if zone.refresh is defined %} --refresh={{ zone.refresh }}{%- endif %}
@@ -45,7 +45,9 @@ freeipa_dnszone_{{ name }}:
         {%- if zone.transfer is defined %} --allow-transfer="{{ zone.transfer|join(';') }}"{%- endif %}
         {%- if zone.nameservers is defined %} --name-server="{{ zone.nameservers[0] }}."{%- endif %}
         ; ret=$?; [ $ret -eq 0 ] && touch /var/lib/ipa/zones/{{ name }}-created.lock ;kdestroy; exit $ret
-    - unless: "test -f /var/lib/ipa/zones/{{ name }}-created.lock || (echo {{ server.admin.password }} | kinit admin && ipa dnszone-find --name={{ name }}; ret=$?; [ $ret -eq 0 ] && touch /var/lib/ipa/zones/{{ name }}-created.lock; kdestroy; exit $ret)"
+    - unless: "test -f /var/lib/ipa/zones/{{ name }}-created.lock || (echo \"$FREEIPA_ADMIN_PASSWORD\" | kinit admin && ipa dnszone-find --name={{ name }}; ret=$?; [ $ret -eq 0 ] && touch /var/lib/ipa/zones/{{ name }}-created.lock; kdestroy; exit $ret)"
+    - env:
+      - FREEIPA_ADMIN_PASSWORD: {{ server.admin.password }}
     - env:
       - KRB5CCNAME: /tmp/krb5cc_salt
     - require:
@@ -57,13 +59,15 @@ freeipa_dnszone_{{ name }}:
 freeipa_dnszone_{{ name }}_transfer:
   cmd.run:
     - name: |
-          ldapmodify -h localhost -D 'cn=directory manager' -w {{ server.ldap.password }} -Z << EOF
+          ldapmodify -h localhost -D 'cn=directory manager' -w "$FREEIPA_LDAP_PASSWORD" -Z << EOF
           dn: idnsname={{ name }}.,cn=dns,dc={{ server.domain|replace('.', ',dc=') }}
           changetype: modify
           replace: idnsAllowTransfer
           idnsAllowTransfer: {{ zone.transfer|join(';') }};
           EOF
-    - unless: "ldapsearch -h localhost -D 'cn=directory manager' -w {{ server.ldap.password }} -b 'idnsname={{ name }}.,cn=dns,dc={{ server.domain|replace('.', ',dc=') }}' -Z | grep 'idnsAllowTransfer: {{ zone.transfer|join(';') }}'"
+    - env:
+      - FREEIPA_LDAP_PASSWORD: {{ server.ldap.password }}
+    - unless: "ldapsearch -h localhost -D 'cn=directory manager' -w \"$FREEIPA_LDAP_PASSWORD\" -b 'idnsname={{ name }}.,cn=dns,dc={{ server.domain|replace('.', ',dc=') }}' -Z | grep 'idnsAllowTransfer: {{ zone.transfer|join(';') }}'"
     - watch:
       - cmd: freeipa_dnszone_{{ name }}
 {%- endif %}
@@ -72,7 +76,7 @@ freeipa_dnszone_{{ name }}_transfer:
 freeipa_dnszone_{{ name }}_nameservers:
   cmd.wait:
     - name: >
-        echo {{ server.admin.password }} | kinit admin &&
+        echo "$FREEIPA_ADMIN_PASSWORD" | kinit admin &&
         ipa dnsrecord-mod "{{ name }}" '@'
         {%- for server in zone.nameservers %}
         --ns-rec="{{ server }}."
@@ -80,6 +84,7 @@ freeipa_dnszone_{{ name }}_nameservers:
         ; ret=$?; kdestroy; exit $ret
     - env:
       - KRB5CCNAME: /tmp/krb5cc_salt
+      - FREEIPA_ADMIN_PASSWORD: {{ server.admin.password }}
     - watch:
       - cmd: freeipa_dnszone_{{ name }}
 {%- endif %}
