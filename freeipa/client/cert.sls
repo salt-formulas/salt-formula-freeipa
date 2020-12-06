@@ -27,7 +27,7 @@ freeipa_certmonger_symlink:
       - service: freeipa_certmonger_service
 {%- endif %}
 
-{%- for principal, cert in client.get("cert", {}).iteritems() %}
+{%- for principal, cert in client.get("cert", {}).items() %}
 {%- if cert.principal is defined %}
   {%- set principal = cert.principal %}
 {%- endif %}

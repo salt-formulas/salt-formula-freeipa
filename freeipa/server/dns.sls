@@ -27,7 +27,7 @@ freeipa_zones_dir:
     - require:
       - cmd: freeipa_server_install
 
-{%- for name, zone in server.get('dns', {}).get('zone', {}).iteritems() %}
+{%- for name, zone in server.get('dns', {}).get('zone', {}).items() %}
 {%- if zone.get('enabled', True) %}
 freeipa_dnszone_{{ name }}:
   cmd.run:

@@ -7,7 +7,7 @@ include:
   - freeipa.client
   {%- endif %}
 
-{%- for keytab_file, keytab in client.get("keytab", {}).iteritems() %}
+{%- for keytab_file, keytab in client.get("keytab", {}).items() %}
 
 freeipa_keytab_{{ keytab_file }}:
   file.managed:
