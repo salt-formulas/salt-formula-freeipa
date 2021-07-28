@@ -109,6 +109,7 @@ freeipa_client_install:
         {%- else %}
         -w {{ client.otp }}
         {%- endif %}
+        {%- if not client.get('ntp', {}).get('enabled', True) %} --no-ntp{%- endif %}
         {%- if client.get('mkhomedir', True) %} --mkhomedir{%- endif %}
         {%- if client.dns.updates %} --enable-dns-updates{%- endif %}
         --unattended
