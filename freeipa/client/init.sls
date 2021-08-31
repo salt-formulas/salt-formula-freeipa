@@ -36,6 +36,8 @@ freeipa_dnsrecord_add:
         -H "Content-Type:application/json"
         -H "Accept:application/json"
         -c /tmp/cookiejar -b /tmp/cookiejar
+        --output /dev/stderr
+        --write-out "%{http_code}"
         -X POST
         -d '{
           "id": 0,
@@ -63,7 +65,7 @@ freeipa_dnsrecord_add:
               "version": "2.156"
             }
           ]
-        }' https://{{ ipa_servers[0] }}/ipa/json
+        }' https://{{ ipa_servers[0] }}/ipa/json | awk '{if ($0<200||$0>399) exit $0}'
     - require:
       - cmd: freeipa_get_ticket
     - require_in:
@@ -80,6 +82,8 @@ freeipa_host_add:
         -H "Content-Type:application/json"
         -H "Accept:applicaton/json"
         -c /tmp/cookiejar -b /tmp/cookiejar
+        --output /dev/stderr
+        --write-out "%{http_code}"
         -X POST
         -d '{
           "id": 0,
@@ -99,7 +103,7 @@ freeipa_host_add:
               "version": "2.156"
             }
           ]
-        }' https://{{ ipa_servers[0] }}/ipa/json
+        }' https://{{ ipa_servers[0] }}/ipa/json | awk '{if ($0<200||$0>399) exit $0}'
     - require:
       - cmd: freeipa_get_ticket
 {%- if client.ip is defined %}
