@@ -25,6 +25,52 @@ freeipa_get_ticket:
       - file: freeipa_push_principal
     - onchanges:
       - file: freeipa_push_principal
+{%- if client.ip is defined %}
+{%- set client_ip = client.get("ip") %}
+freeipa_dnsrecord_add:
+  cmd.run:
+    - name: >
+        curl -k -s
+        -H referer:https://{{ ipa_servers[0] }}/ipa
+        --negotiate -u :
+        -H "Content-Type:application/json"
+        -H "Accept:application/json"
+        -c /tmp/cookiejar -b /tmp/cookiejar
+        -X POST
+        -d '{
+          "id": 0,
+          "method": "dnsrecord_add",
+          "params": [
+            [
+              "{{ client.get("domain", {}) }}",
+              {
+                "__dns_name__": "{{ client.get("hostname", {}).replace(client.get("domain", {}), "")[:-1] }}"
+              }
+            ],
+            {
+              {%- if client_ip.get("reverse", True) %}
+              {%- if client_ip.get("aaaa") %}
+              "aaaa_extra_create_reverse": true,
+              {%- else %}
+              "a_extra_create_reverse": true,
+              {%- endif %}
+              {%- endif %}
+              {%- if client_ip.get("aaaa") %}
+              "aaaa_part_ip_address": "{{ client_ip.get("aaaa") }}",
+              {%- else %}
+              "a_part_ip_address": "{{ client_ip.get("a", salt.grains.get("fqdn_ip4", [])[0]) }}",
+              {%- endif %}
+              "version": "2.156"
+            }
+          ]
+        }' https://{{ ipa_servers[0] }}/ipa/json
+    - require:
+      - cmd: freeipa_get_ticket
+    - require_in:
+      - cmd: freeipa_client_install
+    - onchanges:
+      - file: freeipa_push_principal
+{%- endif %}
 freeipa_host_add:
   cmd.run:
     - name: >
@@ -56,6 +102,9 @@ freeipa_host_add:
         }' https://{{ ipa_servers[0] }}/ipa/json
     - require:
       - cmd: freeipa_get_ticket
+{%- if client.ip is defined %}
+      - cmd: freeipa_dnsrecord_add
+{%- endif %}
     - require_in:
       - cmd: freeipa_client_install
     - onchanges:
