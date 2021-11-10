@@ -7,7 +7,11 @@ include:
 - freeipa.client.cert
 
 {%- if client.install_principal is defined %}
+{%- if salt['salt_version.greater_than']('Aluminium') %}
+{%- set otp = salt['random.get_str'](length=20, punctuation=False) %}
+{%- else %}
 {%- set otp = salt['random.get_str'](20) %}
+{%- endif %}
 
 freeipa_push_principal:
   file.managed:
@@ -160,9 +164,9 @@ freeipa_client_install:
         {%- if client.realm is defined %} --realm {{ client.realm }}{%- endif %}
         --hostname {{ ipa_host }}
         {%- if otp is defined %}
-        -w {{ otp }}
+        -w '{{ otp }}'
         {%- else %}
-        -w {{ client.otp }}
+        -w '{{ client.otp }}'
         {%- endif %}
         {%- if not client.get('ntp', {}).get('enabled', True) %} --no-ntp{%- endif %}
         {%- if client.get('mkhomedir', True) %} --mkhomedir{%- endif %}
