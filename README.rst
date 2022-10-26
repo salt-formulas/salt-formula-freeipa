@@ -47,7 +47,7 @@ Then add to your pillar:
         hostname: {{ salt['grains.get']('fqdn', '') }}
         install_principal:
           source: salt://freeipa/files/principal.keytab
-          mode: 0600
+          mode: "0600"
           principal_user: "service-account"
           file_user: "root"
           file_group: "root"
