@@ -11,13 +11,13 @@ freeipa:
     otp: password
     install_principal:
       source: salt://freeipa/files/principal.keytab
-      mode: 0600
+      mode: "0600"
       principal_user: "salt-service"
       file_user: "root"
       file_group: "root
     keytab:
       /etc/apache2/ipa.keytab:
-        mode: 0640
+        mode: "0640"
         user: root
         group: www-data
         identities:
