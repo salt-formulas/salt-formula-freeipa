@@ -12,7 +12,7 @@ include:
 freeipa_keytab_{{ keytab_file }}:
   file.managed:
     - name: {{ keytab_file }}
-    - mode: {{ keytab.get("mode", 0600) }}
+    - mode: {{ keytab.get("mode", "0600") }}
     - user: {{ keytab.get("user", "root") }}
     - group: {{ keytab.get("group", "root") }}
 
