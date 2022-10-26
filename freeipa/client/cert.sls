@@ -69,7 +69,7 @@ freeipa_cert_{{ principal }}:
 freeipa_cert_{{ key_file }}_key_permissions:
   file.managed:
     - name: {{ key_file }}
-    - mode: {{ cert.get("mode", 0600) }}
+    - mode: {{ cert.get("mode", "0600") }}
     {%- if salt['user.info'](cert.get("user", "root")) %}
     - user: {{ cert.get("user", "root") }}
     {%- endif %}
@@ -82,7 +82,7 @@ freeipa_cert_{{ key_file }}_key_permissions:
 freeipa_cert_{{ cert_file }}_cert_permissions:
   file.managed:
     - name: {{ cert_file }}
-    - mode: {{ cert.get("mode", 0600) }}
+    - mode: {{ cert.get("mode", "0600") }}
     {%- if salt['user.info'](cert.get("user", "root")) %}
     - user: {{ cert.get("user", "root") }}
     {%- endif %}
