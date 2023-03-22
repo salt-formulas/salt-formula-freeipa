@@ -12,7 +12,7 @@ freeipa_server_install:
         --domain {{ server.domain }}
         --hostname {% if server.hostname is defined %}{{ server.hostname }}{% else %}{{ grains['fqdn'] }}{% endif %}
         --ds-password {{ server.ldap.password }}
-        --admin-password {{ server.admin.get('password', server.ldap.password) }}
+        --admin-password {{ server.admin.password }}
         --ssh-trust-dns
         {%- if not server.get('ntp', {}).get('enabled', True) %} --no-ntp{%- endif %}
         {%- if server.get('dns', {}).get('zonemgr', False) %} --zonemgr {{ server.dns.zonemgr }}{%- endif %}

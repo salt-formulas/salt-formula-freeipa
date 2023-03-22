@@ -47,6 +47,8 @@ RedHat:
   ldap_conf: /etc/openldap/ldap.conf
   sssd_conf: /etc/sssd/sssd.conf
   named_conf: /etc/named.conf
+  admin:
+    password: {{ salt['pillar.get']('freeipa:server:admin:password', pillar.freeipa.server.ldap.password) }}
 {%- endload %}
 
 {%- set server = salt['grains.filter_by'](server_defaults, merge=salt['pillar.get']('freeipa:server')) %}
