@@ -1,10 +1,5 @@
 {%- from "freeipa/map.jinja" import client,server with context %}
 
-{%- if not client.get('manual_sshd', False) %}
-include:
-- openssh.server
-{%- endif %}
-
 sssd_service:
   service.running:
     - name: sssd
