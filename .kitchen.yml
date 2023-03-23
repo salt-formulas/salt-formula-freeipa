@@ -1,0 +1,55 @@
+---
+driver:
+  name: docker
+  hostname: freeipa.ci.local
+  #socket: tcp://127.0.0.1:2376
+  use_sudo: false
+
+
+
+provisioner:
+  name: salt_solo
+  salt_install: bootstrap
+  salt_bootstrap_url: https://bootstrap.saltstack.com
+  salt_version: latest
+  require_chef: false
+  formula: freeipa
+  log_level: info
+  state_top:
+    base:
+      "*":
+        - freeipa
+  pillars:
+    top.sls:
+      base:
+        "*":
+          - freeipa
+  grains:
+    noservices: True
+
+
+platforms:
+  - name: <%=ENV['PLATFORM'] ||  'saltstack-centos-7-salt-stable' %>
+    driver_config:
+      image: <%=ENV['PLATFORM'] || 'epcim/salt:saltstack-centos-7-salt-stable'%>
+      platform: <%=ENV['PLATFORM_NAME'] || 'rhel'%>
+
+
+verifier:
+  name: inspec
+  sudo: true
+
+
+suites:
+
+  - name: client
+    provisioner:
+      pillars-from-files:
+        freeipa.sls: tests/pillar/client.sls
+
+  - name: server
+    provisioner:
+      pillars-from-files:
+        freeipa.sls: tests/pillar/server.sls
+
+# vim: ft=yaml sw=2 ts=2 sts=2 tw=125

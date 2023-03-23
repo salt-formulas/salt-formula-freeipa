@@ -34,6 +34,7 @@ all:
 	@echo "make release-major  - Generate new major release"
 	@echo "make release-minor  - Generate new minor release"
 	@echo "make changelog      - Show changes since last release"
+	@echo "make test-model-validate      - Run salt jsonschema validation"
 
 install:
 	# Formula
@@ -41,6 +42,7 @@ install:
 	cp -a $(FORMULANAME) $(DESTDIR)/$(SALTENVDIR)/
 	[ ! -d _modules ] || cp -a _modules $(DESTDIR)/$(SALTENVDIR)/
 	[ ! -d _states ] || cp -a _states $(DESTDIR)/$(SALTENVDIR)/ || true
+	[ ! -d _engines ] || cp -a _engines $(DESTDIR)/$(SALTENVDIR)/ || true
 	[ ! -d _grains ] || cp -a _grains $(DESTDIR)/$(SALTENVDIR)/ || true
 	# Metadata
 	[ -d $(DESTDIR)/$(RECLASSDIR)/service/$(FORMULANAME) ] || mkdir -p $(DESTDIR)/$(RECLASSDIR)/service/$(FORMULANAME)
@@ -51,6 +53,10 @@ lint:
 
 test:
 	[ ! -d tests ] || (cd tests; ./run_tests.sh)
+
+test-model-validate:
+	# TODO make it actually fail
+	[ ! -d $(FORMULANAME)/schemas/ ] || (cd tests; ./run_tests.sh model-validate)
 
 release-major: check-changes
 	@echo "Current version is $(VERSION), new version is $(NEW_MAJOR_VERSION)"
